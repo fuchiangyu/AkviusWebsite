@@ -1,0 +1,147 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Akvius | Personal Website</title>
+    <meta name="description" content="A minimal personal website with an Apple-inspired home page." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="home">
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="index.html" aria-label="Akvius home">
+          <span class="brand-mark"><img src="imgs/avatar.png" alt="" /></span>
+          <span>Akvius</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="nav-links">
+          <a href="index.html" data-page="home">Home</a>
+          <a href="pages/categories.html" data-page="categories">Categories</a>
+          <a href="pages/timeline.html" data-page="timeline">Timeline</a>
+          <a href="pages/about.html" data-page="about">About</a>
+        </div>
+        <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <span class="theme-toggle-sun">&#9728;</span>
+          <span class="theme-toggle-moon">&#9790;</span>
+        </button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero section" id="home">
+        <div class="hero-copy">
+          <p class="eyebrow">AKVIUS' LITTLE WEBSITE</p>
+          <h1>My Tiny Refuge of Passions</h1>
+          <p class="hero-text">A little hideout where an introvert escapes work and gets lost in personal passions.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-action" href="pages/categories.html" data-random-link>FIND Randomly</a>
+            <a class="secondary-action" href="pages/categories.html">CATEGORIES</a>
+          </div>
+          <div class="hero-status">
+            <span>
+              <svg class="status-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="8" />
+                <path d="M12 7v5l3 2" />
+              </svg>
+              <time class="live-clock" datetime="" aria-label="Current date and time">Loading time</time>
+            </span>
+            <span>Chengdu, China</span>
+          </div>
+          <div class="social-links" aria-label="Social links">
+            <a href="https://space.bilibili.com/1525413146?spm_id_from=333.1007.0.0" aria-label="Bilibili">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 4 9.5 7" />
+                <path d="M17 4 14.5 7" />
+                <rect x="3" y="7" width="18" height="13" rx="3" />
+                <path d="M8 12v3" />
+                <path d="M16 12v3" />
+                <path d="M10 17h4" />
+              </svg>
+            </a>
+            <a href="https://u.wechat.com/MIzGY2m_iWLYr0Hb2QWp4_Y?s=2" aria-label="WeChat">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M10.5 6C6.9 6 4 8.2 4 11c0 1.5.8 2.8 2.1 3.7L5.5 17l2.4-1.2c.8.2 1.7.3 2.6.3 3.6 0 6.5-2.2 6.5-5.1S14.1 6 10.5 6Z" />
+                <path d="M14 14.8c.8 1.3 2.4 2.2 4.2 2.2.6 0 1.2-.1 1.7-.3l1.6.8-.4-1.5c.8-.6 1.3-1.5 1.3-2.5 0-2-1.9-3.6-4.2-3.6-.5 0-.9.1-1.3.2" />
+                <path d="M8.5 10h.01" />
+                <path d="M12.5 10h.01" />
+              </svg>
+            </a>
+            <a href="https://github.com/" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 19c-5 1.5-5-2.5-7-3" />
+                <path d="M15 22v-3.9a3.4 3.4 0 0 0-.9-2.6c3-.3 6.1-1.5 6.1-6A4.6 4.6 0 0 0 19 6.3 4.3 4.3 0 0 0 18.9 3s-1-.3-3.3 1.2a11.5 11.5 0 0 0-6 0C7.3 2.7 6.3 3 6.3 3a4.3 4.3 0 0 0-.1 3.3A4.6 4.6 0 0 0 5 9.5c0 4.5 3.1 5.7 6.1 6a3.4 3.4 0 0 0-.9 2.6V22" />
+              </svg>
+            </a>
+            <a href="https://www.douyin.com/" aria-label="Douyin">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 4v10.2a4.2 4.2 0 1 1-3.2-4.1" />
+                <path d="M14 4c.6 3.4 2.6 5.3 6 5.7" />
+              </svg>
+            </a>
+            <a href="mailto:fuchiangyu@gmail.com" aria-label="Email">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="m4 7 8 6 8-6" />
+              </svg>
+            </a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="profile-card">
+            <div class="profile-top">
+              <div class="profile-main">
+                <span class="visual-label">Personal Card</span>
+                <a class="profile-name-link" href="pages/about.html"><strong>Fu Chiangyu</strong></a>
+                <div class="mood-status" aria-label="Current mood">
+                  <span>&#128188;</span>
+                  <p>Mood: Working & Tired</p>
+                </div>
+              </div>
+              <div class="profile-avatar">
+                <img src="imgs/avatar.png" alt="Fu Chiangyu avatar" />
+                <i></i>
+              </div>
+            </div>
+            <div class="khagan-name">
+              <span>Self-Styled Turkic Khagan Name</span>
+              <p class="khagan-script">登里曜 骨禄 没蜜施 也禄 可汗</p>
+              <p class="khagan-latin">T&auml;nrid&auml; Qutluq Bolmi&scaron; Yaruq Qayan</p>
+              <p class="khagan-chinese">承天 启祐 昭明 皇帝</p>
+              <p class="khagan-english">The Heaven-Blessed, Fortunate, and Radiant Khagan</p>
+            </div>
+            <div class="profile-stats">
+              <a href="pages/category-languages.html" aria-label="Open Languages subcategories">
+                <span>128</span>
+                <p>Languages</p>
+              </a>
+              <a href="pages/category-music.html" aria-label="Open Music subcategories">
+                <span>342</span>
+                <p>Music</p>
+              </a>
+              <a href="pages/category-tools.html" aria-label="Open Tools subcategories">
+                <span>57</span>
+                <p>Tools</p>
+              </a>
+              <a href="pages/category-notes.html" aria-label="Open Notes subcategories">
+                <span>12</span>
+                <p>Notes</p>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; 2026 Akvius. Stay curious. Keep passions.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
