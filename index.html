@@ -1,19 +1,16 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Akvius | Personal Website</title>
     <meta name="description" content="A minimal personal website with an Apple-inspired home page." />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="assets/css/styles.css" />
   </head>
   <body data-page="home">
     <header class="site-header">
       <nav class="nav-shell" aria-label="Primary navigation">
-        <a class="brand" href="index.html" aria-label="Akvius home">
-          <span class="brand-mark"><img src="imgs/avatar.png" alt="" /></span>
-          <span>Akvius</span>
-        </a>
+        <button class="brand" type="button" aria-label="Open navigation" aria-expanded="false"><span class="brand-mark"><img src="assets/img/avatar.png" alt="" /></span><span>Akvius</span></button>
         <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
           <span></span>
           <span></span>
@@ -21,9 +18,9 @@
         </button>
         <div class="nav-links">
           <a href="index.html" data-page="home">Home</a>
-          <a href="pages/categories.html" data-page="categories">Categories</a>
-          <a href="pages/timeline.html" data-page="timeline">Timeline</a>
-          <a href="pages/about.html" data-page="about">About</a>
+          <a href="categories/index.html" data-page="categories">Categories</a>
+          <a href="timeline/index.html" data-page="timeline">Timeline</a>
+          <a href="about/index.html" data-page="about">About</a>
         </div>
         <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
           <span class="theme-toggle-sun">&#9728;</span>
@@ -40,17 +37,21 @@
           <p class="hero-text">A little hideout where an introvert escapes work and gets lost in personal passions.
           </p>
           <div class="hero-actions">
-            <a class="primary-action" href="pages/categories.html" data-random-link>FIND Randomly</a>
-            <a class="secondary-action" href="pages/categories.html">CATEGORIES</a>
+            <a
+              class="primary-action"
+              href="categories/languages/chaghatay/posts/chagatai-dictionary.html"
+              data-random-link
+            >FIND Randomly</a>
+            <a class="secondary-action" href="categories/index.html">CATEGORIES</a>
           </div>
           <div class="hero-status">
-            <span>
+            <a class="hero-status-link" href="timeline/index.html" aria-label="Open timeline">
               <svg class="status-icon" viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="12" cy="12" r="8" />
                 <path d="M12 7v5l3 2" />
               </svg>
               <time class="live-clock" datetime="" aria-label="Current date and time">Loading time</time>
-            </span>
+            </a>
             <span>Chengdu, China</span>
           </div>
           <div class="social-links" aria-label="Social links">
@@ -97,39 +98,39 @@
             <div class="profile-top">
               <div class="profile-main">
                 <span class="visual-label">Personal Card</span>
-                <a class="profile-name-link" href="pages/about.html"><strong>Fu Chiangyu</strong></a>
+                <a class="profile-name-link" href="about/index.html"><strong>Fu Chiangyu</strong></a>
                 <div class="mood-status" aria-label="Current mood">
                   <span>&#128188;</span>
                   <p>Mood: Working & Tired</p>
                 </div>
               </div>
-              <div class="profile-avatar">
-                <img src="imgs/avatar.png" alt="Fu Chiangyu avatar" />
+              <a class="profile-avatar" href="about/index.html" aria-label="Open about page">
+                <img src="assets/img/avatar.png" alt="Fu Chiangyu avatar" />
                 <i></i>
-              </div>
+              </a>
             </div>
             <div class="khagan-name">
               <span>Self-Styled Turkic Khagan Name</span>
-              <p class="khagan-script">登里曜 骨禄 没蜜施 也禄 可汗</p>
+              <p class="khagan-script">&#30331;&#37324;&#26332; &#39592;&#31108; &#27809;&#34588;&#26045; &#20063;&#31108; &#21487;&#27735;</p>
               <p class="khagan-latin">T&auml;nrid&auml; Qutluq Bolmi&scaron; Yaruq Qayan</p>
-              <p class="khagan-chinese">承天 启祐 昭明 皇帝</p>
+              <p class="khagan-chinese">&#25215;&#22825; &#21551;&#31056; &#26157;&#26126; &#30343;&#24093;</p>
               <p class="khagan-english">The Heaven-Blessed, Fortunate, and Radiant Khagan</p>
             </div>
             <div class="profile-stats">
-              <a href="pages/category-languages.html" aria-label="Open Languages subcategories">
-                <span>128</span>
+              <a href="categories/languages/index.html" aria-label="Open Languages subcategories">
+                <span data-category-count="languages">0</span>
                 <p>Languages</p>
               </a>
-              <a href="pages/category-music.html" aria-label="Open Music subcategories">
-                <span>342</span>
+              <a href="categories/music/index.html" aria-label="Open Music subcategories">
+                <span data-category-count="music">0</span>
                 <p>Music</p>
               </a>
-              <a href="pages/category-tools.html" aria-label="Open Tools subcategories">
-                <span>57</span>
+              <a href="categories/tools/index.html" aria-label="Open Tools subcategories">
+                <span data-category-count="tools">0</span>
                 <p>Tools</p>
               </a>
-              <a href="pages/category-notes.html" aria-label="Open Notes subcategories">
-                <span>12</span>
+              <a href="categories/notes/index.html" aria-label="Open Notes articles">
+                <span data-category-count="notes">0</span>
                 <p>Notes</p>
               </a>
             </div>
@@ -142,6 +143,11 @@
       <p>&copy; 2026 Akvius. Stay curious. Keep passions.</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="assets/js/site-data.js"></script>
+    <script src="assets/js/site-config.js"></script>
+    <script src="assets/js/site-stats.js"></script>
+    <script src="assets/js/script.js"></script>
   </body>
 </html>
+
+

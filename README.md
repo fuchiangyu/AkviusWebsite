@@ -1,18 +1,39 @@
 # Akvius Personal Website
 
-A static personal website.
+A static personal website for GitHub Pages.
 
-## Sections
+## Dynamic stats
 
-- Home
-- Categories
-- Timeline
-- About
+Visits and likes are designed for GitHub Pages + Cloudflare Worker.
 
-## Files
+Static pages read and write stats through:
 
-- `index.html` - page structure
-- `styles.css` - layout, responsive design, and visual styling
-- `script.js` - mobile navigation and active section state
+```text
+GET  /stats
+POST /visit
+POST /like
+```
 
-Open `index.html` directly in a browser, or serve the folder with any static web server.
+The Worker implementation is in `workers/stats-worker`.
+
+Deploy flow:
+
+```powershell
+cd workers/stats-worker
+wrangler d1 create akvius-stats
+```
+
+Copy the returned database id into `wrangler.toml`, then run:
+
+```powershell
+wrangler d1 execute akvius-stats --file=./schema.sql
+wrangler deploy
+```
+
+After deploy, set the Worker URL in `assets/js/site-stats.js`:
+
+```js
+const apiBase = "https://akvius-stats.<your-subdomain>.workers.dev";
+```
+
+Until `apiBase` is filled, the site uses local browser fallback data only.
