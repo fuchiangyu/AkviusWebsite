@@ -163,32 +163,42 @@ const getR2Object = async (env, key) => {
 };
 
 export const onRequest = async ({ request, env }) => {
-  if (request.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+  try {
+    if (request.method === "OPTIONS") {
+      return new Response(null, { headers: corsHeaders });
+    }
+
+    if (!env.DB) {
+      return json({ error: "D1 binding DB is not configured" }, 500);
+    }
+
+    const url = new URL(request.url);
+    const path = url.pathname.replace(/^\/api/, "") || "/";
+
+    if (request.method === "GET" && path === "/stats") {
+      return json(await getStats(env));
+    }
+
+    if (request.method === "POST" && path === "/visit") {
+      return json(await recordVisit(env));
+    }
+
+    if (request.method === "POST" && path === "/like") {
+      return recordLike(env, await readBody(request));
+    }
+
+    if (request.method === "GET" && path.startsWith("/media/")) {
+      return getR2Object(env, decodeURIComponent(path.slice("/media/".length)));
+    }
+
+    return json({ error: "Not found" }, 404);
+  } catch (error) {
+    return json(
+      {
+        error: "Pages Function failed",
+        message: error instanceof Error ? error.message : String(error),
+      },
+      500,
+    );
   }
-
-  if (!env.DB) {
-    return json({ error: "D1 binding DB is not configured" }, 500);
-  }
-
-  const url = new URL(request.url);
-  const path = url.pathname.replace(/^\/api/, "") || "/";
-
-  if (request.method === "GET" && path === "/stats") {
-    return json(await getStats(env));
-  }
-
-  if (request.method === "POST" && path === "/visit") {
-    return json(await recordVisit(env));
-  }
-
-  if (request.method === "POST" && path === "/like") {
-    return recordLike(env, await readBody(request));
-  }
-
-  if (request.method === "GET" && path.startsWith("/media/")) {
-    return getR2Object(env, decodeURIComponent(path.slice("/media/".length)));
-  }
-
-  return json({ error: "Not found" }, 404);
 };
