@@ -6,13 +6,24 @@ window.AkviusStats = (() => {
   const request = async (path, options = {}) => {
     if (!isEnabled()) return null;
 
-    const response = await fetch(`${apiBase}${path}`, {
-      ...options,
-      headers: {
-        "content-type": "application/json",
-        ...(options.headers || {}),
-      },
-    });
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 8000);
+
+    let response;
+    try {
+      const headers = { ...(options.headers || {}) };
+      if (options.body && !headers["content-type"]) {
+        headers["content-type"] = "application/json";
+      }
+
+      response = await fetch(`${apiBase}${path}`, {
+        ...options,
+        signal: controller.signal,
+        headers,
+      });
+    } finally {
+      window.clearTimeout(timeout);
+    }
 
     if (!response.ok) {
       throw new Error(`Stats API ${response.status}`);

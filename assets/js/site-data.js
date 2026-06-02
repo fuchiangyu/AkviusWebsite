@@ -1,7 +1,4 @@
 window.AkviusData = (() => {
-  const visitStorageKey = "akvius-total-visits";
-  const visitHistoryKey = "akvius-visit-history";
-  const likeEventHistoryKey = "akvius-like-events";
   let remoteStats = null;
 
   const siteContent = {
@@ -73,25 +70,11 @@ window.AkviusData = (() => {
 
   const postTargets = Object.values(pageLikeTargets).filter((target) => target.kind === "post");
 
-  const readJson = (key, fallback) => {
-    try {
-      const raw = localStorage.getItem(key);
-      return raw ? JSON.parse(raw) : fallback;
-    } catch {
-      return fallback;
-    }
-  };
-
-  const writeJson = (key, value) => {
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-    } catch {
-      // Local analytics are optional.
-    }
-  };
-
   const formatCount = (count) => {
-    const value = Number(count || 0);
+    if (count === null || count === undefined || count === "/") return "/";
+
+    const value = Number(count);
+    if (!Number.isFinite(value)) return "/";
 
     if (value >= 1000000) {
       const compact = value / 1000000;
@@ -114,45 +97,30 @@ window.AkviusData = (() => {
       day: "2-digit",
     }).format(new Date());
 
-  const recordVisit = () => {
-    let visits = 0;
-    let history = {};
+  const getLikeCount = (key) => {
+    if (!remoteStats) return null;
 
-    try {
-      visits = Number(localStorage.getItem(visitStorageKey) || visits) + 1;
-      localStorage.setItem(visitStorageKey, String(visits));
-      history = readJson(visitHistoryKey, {});
-      const day = todayKey();
-      history[day] = Number(history[day] || 0) + 1;
-      writeJson(visitHistoryKey, history);
-    } catch {
-      visits += 1;
-    }
-
-    return { visits, history };
-  };
-
-  const getLikeCount = (key, fallback = 0) => {
     const remoteCount = remoteStats?.likes?.[key]?.total;
     if (Number.isFinite(Number(remoteCount))) return Number(remoteCount);
 
-    try {
-      const stored = Number(localStorage.getItem(`akvius-like-count:${key}`));
-      return Number.isFinite(stored) ? stored : fallback;
-    } catch {
-      return fallback;
-    }
+    return 0;
   };
 
-  const getVisitState = (fallback = { visits: 0, history: {} }) => ({
-    visits: Number(remoteStats?.visits?.total ?? fallback.visits ?? 0),
-    history: remoteStats?.visits?.daily || fallback.history || {},
+  const getVisitState = () => ({
+    visits: remoteStats ? Number(remoteStats?.visits?.total || 0) : null,
+    history: remoteStats?.visits?.daily || null,
   });
 
-  const getLikeEvents = () => remoteStats?.likeEvents || readJson(likeEventHistoryKey, []);
+  const getLikeEvents = () => remoteStats?.likeEvents || [];
+
+  const hasRemoteStats = () => Boolean(remoteStats);
 
   const setRemoteStats = (stats) => {
-    if (!stats || typeof stats !== "object") return;
+    if (!stats || typeof stats !== "object") {
+      remoteStats = null;
+      return;
+    }
+
     remoteStats = {
       visits: {
         total: Number(stats.visits?.total || 0),
@@ -164,31 +132,15 @@ window.AkviusData = (() => {
     };
   };
 
-  const recordLike = (key, count) => {
-    try {
-      localStorage.setItem(`akvius-like-count:${key}`, String(count));
-      const events = readJson(likeEventHistoryKey, []);
-      events.unshift({
-        key,
-        title: pageLikeTargets[key]?.title || key,
-        count,
-        time: new Date().toISOString(),
-      });
-      writeJson(likeEventHistoryKey, events.slice(0, 80));
-    } catch {
-      // The visual feedback still works when storage is unavailable.
-    }
-  };
-
   const getTopLikedTarget = (kind = "post") =>
     Object.entries(pageLikeTargets)
       .filter(([, target]) => !kind || target.kind === kind)
       .map(([key, target]) => ({
         key,
         ...target,
-        count: getLikeCount(key, target.baseCount),
+        count: getLikeCount(key),
       }))
-      .sort((a, b) => b.count - a.count)[0];
+      .sort((a, b) => Number(b.count || 0) - Number(a.count || 0))[0];
 
   return {
     categoryCounts,
@@ -197,15 +149,11 @@ window.AkviusData = (() => {
     getLikeEvents,
     getVisitState,
     getTopLikedTarget,
-    likeEventHistoryKey,
+    hasRemoteStats,
     pageLikeTargets,
     postTargets,
-    readJson,
-    recordLike,
-    recordVisit,
     setRemoteStats,
     siteContent,
     todayKey,
-    visitHistoryKey,
   };
 })();

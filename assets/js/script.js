@@ -141,8 +141,7 @@ const shouldRecordVisit = (() => {
   }
 })();
 
-const localVisitState = shouldRecordVisit ? siteData.recordVisit() : siteData.getVisitState();
-let siteVisitState = siteData.getVisitState(localVisitState);
+let siteVisitState = siteData.getVisitState();
 
 const updateNavPanelHeights = () => {
   document.querySelectorAll(".nav-item-has-panel").forEach((item) => {
@@ -283,14 +282,16 @@ const renderLikeButton = (button, count) => {
   if (!value) return;
 
   value.textContent = siteData.formatCount(count);
-  button.setAttribute("aria-label", `Like this page. ${count.toLocaleString("en-US")} likes`);
+  button.setAttribute(
+    "aria-label",
+    Number.isFinite(Number(count)) ? `Like this page. ${Number(count).toLocaleString("en-US")} likes` : "Like this page. Likes unavailable",
+  );
 };
 
 const renderLikeButtons = () => {
   likeButtons.forEach((button) => {
     const key = button.dataset.likeKey;
-    const baseCount = Number(button.dataset.likeCount || 0);
-    renderLikeButton(button, siteData.getLikeCount(key, baseCount));
+    renderLikeButton(button, siteData.getLikeCount(key));
   });
 };
 
@@ -299,18 +300,12 @@ renderLikeButtons();
 likeButtons.forEach((button) => {
   button.addEventListener("click", async () => {
     const key = button.dataset.likeKey;
-    const baseCount = Number(button.dataset.likeCount || 0);
     const target = siteData.pageLikeTargets[key] || {};
-    const localCount = siteData.getLikeCount(key, baseCount) + 1;
-    siteData.recordLike(key, localCount);
 
     button.classList.remove("like-button-pulse");
     void button.offsetWidth;
     button.classList.add("like-button-pulse");
     window.setTimeout(() => button.classList.remove("like-button-pulse"), 360);
-    renderLikeButton(button, localCount);
-    renderTopLiked();
-    renderCombinedChart();
 
     try {
       const stats = await siteStats?.recordLike({
@@ -321,14 +316,18 @@ likeButtons.forEach((button) => {
       });
       if (stats) {
         siteData.setRemoteStats(stats);
-        siteVisitState = siteData.getVisitState(localVisitState);
+        siteVisitState = siteData.getVisitState();
         renderLikeButtons();
         updateVisitCount();
         renderTopLiked();
         renderCombinedChart();
       }
     } catch {
-      // Local fallback has already updated the visible count.
+      siteData.setRemoteStats(null);
+      renderLikeButtons();
+      updateVisitCount();
+      renderTopLiked();
+      renderCombinedChart();
     }
   });
 });
@@ -363,7 +362,7 @@ setInterval(updateLiveClock, 1000);
 
 const updateVisitCount = () => {
   if (!visitCount) return;
-  siteVisitState = siteData.getVisitState(localVisitState);
+  siteVisitState = siteData.getVisitState();
   document.querySelectorAll("[data-visit-count]").forEach((node) => {
     node.textContent = siteData.formatCount(siteVisitState.visits);
   });
@@ -446,7 +445,17 @@ const renderCombinedChart = () => {
   const chart = document.querySelector("[data-combined-chart]");
   if (!chart) return;
 
-  siteVisitState = siteData.getVisitState(localVisitState);
+  if (!siteData.hasRemoteStats()) {
+    chart.innerHTML = `
+      <div class="chart-unavailable">
+        <strong>/</strong>
+        <span>Remote stats unavailable.</span>
+      </div>
+    `;
+    return;
+  }
+
+  siteVisitState = siteData.getVisitState();
   const history = siteVisitState.history || {};
   const events = siteData.getLikeEvents();
   const escapeSvgText = (value) =>
@@ -454,6 +463,10 @@ const renderCombinedChart = () => {
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;");
+  const escapeHtml = (value) =>
+    escapeSvgText(value)
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   const startDate = new Date("2026-05-26T00:00:00+08:00");
   const today = new Date();
   const spanDays = Math.max(1, Math.floor((today.getTime() - startDate.getTime()) / 86400000) + 1);
@@ -468,16 +481,12 @@ const renderCombinedChart = () => {
     }).format(date);
     return { key, label: formatDisplayDate(key), count: Number(history[key] || 0) };
   });
-  const max = Math.max(1, ...days.map((day) => day.count));
   const width = Math.max(1120, 150 + days.length * 120);
   const height = 500;
   const pad = { top: 48, right: 44, bottom: 90, left: 58 };
   const innerWidth = width - pad.left - pad.right;
   const innerHeight = height - pad.top - pad.bottom;
   const xForIndex = (index) => pad.left + (innerWidth / Math.max(1, days.length - 1)) * index;
-  const yForCount = (count) => pad.top + innerHeight - (count / max) * innerHeight;
-  const points = days.map((day, index) => `${xForIndex(index)},${yForCount(day.count)}`).join(" ");
-  const areaPoints = `${pad.left},${pad.top + innerHeight} ${points} ${pad.left + innerWidth},${pad.top + innerHeight}`;
   const likesByDay = new Map(days.map((day) => [day.key, new Map()]));
 
   events.forEach((event) => {
@@ -494,46 +503,65 @@ const renderCombinedChart = () => {
     if (!dayLikes) return;
 
     const postKey = event.key || event.title || "unknown";
+    const target = siteData.pageLikeTargets?.[postKey] || {};
     const existing = dayLikes.get(postKey) || {
-      title: event.title || siteData.pageLikeTargets?.[postKey]?.title || "Unknown post",
+      title: event.title || target.title || "Unknown post",
+      href: event.href || target.href || "",
       count: 0,
     };
-    existing.count += 1;
+    existing.count += Number(event.count || 1);
     dayLikes.set(postKey, existing);
   });
 
-  const likeTags = days
+  days.forEach((day) => {
+    day.likes = [...(likesByDay.get(day.key)?.values() || [])].reduce((sum, entry) => sum + entry.count, 0);
+  });
+
+  const max = Math.max(1, ...days.flatMap((day) => [day.count, day.likes]));
+  const yForCount = (count) => pad.top + innerHeight - (count / max) * innerHeight;
+  const visitPoints = days.map((day, index) => `${xForIndex(index)},${yForCount(day.count)}`).join(" ");
+  const likePoints = days.map((day, index) => `${xForIndex(index)},${yForCount(day.likes)}`).join(" ");
+  const areaPoints = `${pad.left},${pad.top + innerHeight} ${visitPoints} ${pad.left + innerWidth},${pad.top + innerHeight}`;
+  const hasLikes = days.some((day) => day.likes > 0);
+  const tooltipOverlays = days
     .map((day, index) => {
       const entries = [...(likesByDay.get(day.key)?.values() || [])].sort((a, b) => b.count - a.count);
       if (!entries.length) return "";
 
       const x = xForIndex(index);
-      const y = Math.max(pad.top + 28, yForCount(day.count) - 64);
-      const tagWidth = Math.min(220, Math.max(138, ...entries.map((entry) => entry.title.length * 7.2 + 56)));
-      const tagX = Math.min(Math.max(x - tagWidth / 2, pad.left), width - pad.right - tagWidth);
+      const y = yForCount(day.likes);
+      const left = (x / width) * 100;
+      const top = (y / height) * 100;
 
       return `
-        <g class="chart-like-cluster">
-          <line class="chart-like-stem" x1="${x}" y1="${yForCount(day.count)}" x2="${x}" y2="${y + 18}" />
-          ${entries
-            .slice(0, 3)
-            .map((entry, entryIndex) => {
-              const tagY = y + entryIndex * 28;
-              return `
-                <rect class="chart-like-tag-bg" x="${tagX}" y="${tagY}" width="${tagWidth}" height="22" rx="11" />
-                <circle class="chart-like-point" cx="${tagX + 12}" cy="${tagY + 11}" r="4" />
-                <text class="chart-like-label" x="${tagX + 24}" y="${tagY + 15}">${escapeSvgText(entry.title)} +${siteData.formatCount(entry.count)}</text>
-              `;
-            })
-            .join("")}
-        </g>
+        <div class="chart-like-hotspot" style="left: ${left}%; top: ${top}%;">
+          <button class="chart-like-hotspot-button" type="button" aria-label="${escapeHtml(day.label)} likes">
+            ${siteData.formatCount(day.likes)}
+          </button>
+          <div class="chart-like-tooltip" role="tooltip">
+            <strong>${escapeHtml(day.label)} · ${siteData.formatCount(day.likes)} likes</strong>
+            <div class="chart-like-tooltip-list">
+              ${entries
+                .map((entry) => {
+                  const href = entry.href ? resolveThemeHref(entry.href) : "#";
+                  return `<a href="${escapeHtml(href)}"><span>${escapeHtml(entry.title)}</span><em>+${siteData.formatCount(entry.count)}</em></a>`;
+                })
+                .join("")}
+            </div>
+          </div>
+        </div>
       `;
     })
     .join("");
-  const hasLikes = [...likesByDay.values()].some((dayLikes) => dayLikes.size > 0);
 
   chart.innerHTML = `
     <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Daily visits and post like events since 2026/5/26">
+      <g class="chart-legend" aria-hidden="true">
+        <circle class="chart-visit-point" cx="${pad.left}" cy="18" r="5" />
+        <text class="chart-legend-label" x="${pad.left + 14}" y="22">Visits</text>
+        <circle class="chart-like-point" cx="${pad.left + 92}" cy="18" r="5" />
+        <text class="chart-legend-label" x="${pad.left + 106}" y="22">Likes</text>
+      </g>
       ${[0, 0.25, 0.5, 0.75, 1]
         .map((tick) => {
           const y = pad.top + innerHeight * tick;
@@ -541,26 +569,30 @@ const renderCombinedChart = () => {
         })
         .join("")}
       <polygon class="chart-visit-area" points="${areaPoints}" />
-      <polyline class="chart-visit-line" points="${points}" />
+      <polyline class="chart-visit-line" points="${visitPoints}" />
+      <polyline class="chart-like-line" points="${likePoints}" />
       ${days
         .map((day, index) => {
           const x = xForIndex(index);
-          const y = yForCount(day.count);
+          const visitY = yForCount(day.count);
+          const likeY = yForCount(day.likes);
           return `
-            <circle class="chart-visit-point" cx="${x}" cy="${y}" r="5" />
-            <text class="chart-visit-value" x="${x}" y="${Math.max(pad.top + 18, y - 14)}" text-anchor="middle">${siteData.formatCount(day.count)}</text>
+            <circle class="chart-visit-point" cx="${x}" cy="${visitY}" r="5" />
+            <circle class="chart-like-point" cx="${x}" cy="${likeY}" r="5" />
+            <text class="chart-visit-value" x="${x}" y="${Math.max(pad.top + 18, visitY - 14)}" text-anchor="middle">${siteData.formatCount(day.count)}</text>
+            <text class="chart-like-value" x="${x}" y="${Math.max(pad.top + 34, likeY - 14)}" text-anchor="middle">${siteData.formatCount(day.likes)}</text>
             <text class="chart-axis-label" x="${x}" y="${height - 24}" text-anchor="middle">${day.label}</text>
-            <text class="chart-axis-sub-label" x="${x}" y="${height - 8}" text-anchor="middle">${siteData.formatCount(day.count)} views</text>
+            <text class="chart-axis-sub-label" x="${x}" y="${height - 8}" text-anchor="middle">${siteData.formatCount(day.count)} views · ${siteData.formatCount(day.likes)} likes</text>
           `;
         })
         .join("")}
-      ${likeTags}
       ${
         hasLikes
           ? ""
           : `<text class="chart-empty-label" x="${pad.left}" y="${pad.top + 34}">No post likes recorded in this range.</text>`
       }
     </svg>
+    ${tooltipOverlays}
   `;
 };
 
@@ -577,10 +609,8 @@ const updateSiteDays = () => {
 updateSiteDays();
 
 const refreshRemoteStats = (stats) => {
-  if (!stats) return;
-
   siteData.setRemoteStats(stats);
-  siteVisitState = siteData.getVisitState(localVisitState);
+  siteVisitState = siteData.getVisitState();
   updateVisitCount();
   renderLikeButtons();
   renderTopLiked();
@@ -588,7 +618,10 @@ const refreshRemoteStats = (stats) => {
 };
 
 const syncRemoteStats = async () => {
-  if (!siteStats?.isEnabled()) return;
+  if (!siteStats?.isEnabled()) {
+    refreshRemoteStats(null);
+    return;
+  }
 
   try {
     const stats = shouldRecordVisit
@@ -602,7 +635,7 @@ const syncRemoteStats = async () => {
     try {
       refreshRemoteStats(await siteStats.getStats());
     } catch {
-      // The local fallback remains usable offline or before deployment.
+      refreshRemoteStats(null);
     }
   }
 };

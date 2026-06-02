@@ -1593,10 +1593,14 @@ h3 {
 }
 
 .subcategory-icon .chaghatay-mark {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   fill: none;
   stroke: none;
+}
+
+.subcategory-icon-chaghatay {
+  background: rgba(244, 247, 251, 0.74);
 }
 
 .chaghatay-mark .chaghatay-mark-bg {
@@ -1608,7 +1612,7 @@ h3 {
   stroke: #1d1d1f;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 7.5;
+  stroke-width: 6.4;
 }
 
 .subcategory-icon .turkish-mark {
@@ -1632,6 +1636,33 @@ h3 {
   height: 36px;
   fill: #2f8fe8;
   stroke: none;
+}
+
+.subcategory-icon .dictionary-mark {
+  width: 40px;
+  height: 40px;
+  fill: none;
+  stroke: none;
+}
+
+.dictionary-mark-bg {
+  fill: rgba(255, 255, 255, 0.64);
+}
+
+.dictionary-mark-book {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3.5;
+}
+
+.dictionary-mark-letter {
+  fill: currentColor;
+  stroke: none;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  font-size: 24px;
+  font-weight: 850;
 }
 
 .uyghur-mark .uyghur-crescent-main,
@@ -2601,6 +2632,7 @@ h3 {
 }
 
 .combined-chart {
+  position: relative;
   width: 100%;
   min-height: 440px;
 }
@@ -2611,6 +2643,26 @@ h3 {
   height: auto;
   min-height: 440px;
   overflow: visible;
+}
+
+.chart-unavailable {
+  display: grid;
+  min-height: 440px;
+  place-items: center;
+  gap: 8px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.chart-unavailable strong {
+  color: var(--ink);
+  font-size: clamp(34px, 5vw, 64px);
+  line-height: 1;
+}
+
+.chart-unavailable span {
+  font-size: 14px;
+  font-weight: 650;
 }
 
 .chart-grid-line {
@@ -2645,6 +2697,14 @@ h3 {
   stroke-width: 4;
 }
 
+.chart-like-line {
+  fill: none;
+  stroke: #d384b5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
 .chart-visit-area {
   fill: rgba(31, 159, 179, 0.08);
 }
@@ -2672,6 +2732,120 @@ h3 {
   fill: #d384b5;
   stroke: rgba(255, 255, 255, 0.88);
   stroke-width: 3;
+}
+
+.chart-like-value {
+  fill: #9f5a8b;
+  font-size: 12px;
+  font-weight: 780;
+}
+
+.chart-legend-label {
+  fill: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.chart-like-hotspot {
+  position: absolute;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+}
+
+.chart-like-hotspot-button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid rgba(211, 132, 181, 0.40);
+  border-radius: 999px;
+  background: rgba(255, 244, 251, 0.88);
+  color: #9f5a8b;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 820;
+  opacity: 0;
+  transform: scale(0.76);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease,
+    background 180ms ease;
+}
+
+.chart-like-hotspot:hover .chart-like-hotspot-button,
+.chart-like-hotspot:focus-within .chart-like-hotspot-button {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.chart-like-tooltip {
+  position: absolute;
+  right: 50%;
+  bottom: calc(100% + 10px);
+  width: max-content;
+  max-width: min(260px, 70vw);
+  padding: 10px;
+  border: 1px solid rgba(211, 132, 181, 0.28);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 16px 36px rgba(26, 36, 52, 0.14);
+  color: var(--ink);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(50%, 6px);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.chart-like-hotspot:hover .chart-like-tooltip,
+.chart-like-hotspot:focus-within .chart-like-tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(50%, 0);
+}
+
+.chart-like-tooltip strong {
+  display: block;
+  margin: 0 0 8px;
+  color: #9f5a8b;
+  font-size: 12px;
+  font-weight: 820;
+  white-space: nowrap;
+}
+
+.chart-like-tooltip-list {
+  display: grid;
+  gap: 6px;
+}
+
+.chart-like-tooltip-list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-width: 190px;
+  padding: 7px 8px;
+  border-radius: 9px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 720;
+  text-decoration: none;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.chart-like-tooltip-list a:hover,
+.chart-like-tooltip-list a:focus-visible {
+  background: rgba(211, 132, 181, 0.12);
+  color: #9f5a8b;
+}
+
+.chart-like-tooltip-list em {
+  color: #9f5a8b;
+  font-style: normal;
+  font-weight: 820;
 }
 
 .chart-like-label {
@@ -2749,6 +2923,22 @@ h3 {
   stroke: rgba(18, 26, 38, 0.92);
 }
 
+:root[data-theme="dark"] .chart-like-hotspot-button {
+  background: rgba(61, 45, 66, 0.92);
+}
+
+:root[data-theme="dark"] .chart-like-tooltip {
+  border-color: rgba(230, 154, 205, 0.22);
+  background: rgba(18, 26, 38, 0.96);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+}
+
+:root[data-theme="dark"] .chart-like-tooltip-list a:hover,
+:root[data-theme="dark"] .chart-like-tooltip-list a:focus-visible {
+  background: rgba(230, 154, 205, 0.12);
+}
+
+:root[data-theme="dark"] .chart-like-value,
 :root[data-theme="dark"] .chart-like-label {
   fill: #e69acd;
 }
