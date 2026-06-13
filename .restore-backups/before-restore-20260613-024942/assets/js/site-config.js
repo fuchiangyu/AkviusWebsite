@@ -1,0 +1,3 @@
+window.AkviusConfig = {
+  statsApiBase: "/api",
+};

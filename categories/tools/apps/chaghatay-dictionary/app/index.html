@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chaghatay Dictionary App</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="embedded-dictionary">
+    <header class="dictionary-title-block">
+      <div class="dictionary-title-copy">
+        <h1>Chaghatay Dictionary</h1>
+        <p>A small website for looking up Chaghatay words.</p>
+      </div>
+      <section class="global-search" aria-label="Dictionary search">
+        <label class="search-box">
+          <input id="searchInput" type="search" autocomplete="off" placeholder="Search Chaghatay words" />
+        </label>
+      </section>
+      <p class="source-footer">
+        Source: <cite>A Dictionary of Early Middle Turkic</cite>, by Hendrik Boeschoten, with the editorial assistance of John O'Kane.
+      </p>
+    </header>
+
+    <details class="converter-panel">
+      <summary>Latin transliteration to Arabic script <span class="reference-note">reference only</span></summary>
+      <div class="converter-body" aria-label="Transliteration converter">
+        <div class="converter-field">
+          <label for="latinInput">Latin transliteration</label>
+          <textarea id="latinInput" rows="2" spellcheck="false"></textarea>
+        </div>
+        <div class="converter-actions" aria-hidden="true">&rarr;</div>
+        <div class="converter-field">
+          <label for="arabicInput">Arabic script</label>
+          <textarea id="arabicInput" rows="2" dir="rtl" spellcheck="false"></textarea>
+        </div>
+      </div>
+    </details>
+
+    <main class="app-shell">
+      <aside class="search-pane" aria-label="Search results">
+        <div class="brand-row">
+          <div>
+            <h2>Search results</h2>
+            <p>Matches</p>
+          </div>
+          <span id="entryCount" class="count">0</span>
+        </div>
+
+        <div class="filter-row" role="group" aria-label="Search mode">
+          <button class="mode-button active" type="button" data-mode="all">All text</button>
+          <button class="mode-button" type="button" data-mode="headword">Headword</button>
+        </div>
+
+        <ol id="results" class="results"></ol>
+        <nav id="pagination" class="pagination" aria-label="Results pages"></nav>
+      </aside>
+
+      <section class="detail-pane" aria-live="polite">
+        <article id="detail" class="entry-detail">
+          <div class="empty-state">
+            <h2>Chaghatay Dictionary</h2>
+            <p>Enter a headword, transliteration, or meaning to start searching.</p>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <script src="data/entries.js?v=20260605a" charset="utf-8"></script>
+    <script src="app.js?v=20260605a" charset="utf-8"></script>
+    <script>
+      const theme = new URLSearchParams(window.location.search).get("theme");
+      if (theme === "dark" || theme === "light") {
+        document.documentElement.dataset.theme = theme;
+      }
+
+      function postDictionaryHeight() {
+        const elements = [...document.body.children];
+        const height = elements.reduce((bottom, element) => {
+          const rect = element.getBoundingClientRect();
+          const style = window.getComputedStyle(element);
+          const marginBottom = parseFloat(style.marginBottom) || 0;
+          return Math.max(bottom, rect.bottom + window.scrollY + marginBottom);
+        }, 0);
+        window.parent?.postMessage({ type: "dictionary-height", height }, "*");
+      }
+
+      const scheduleDictionaryHeight = () => {
+        postDictionaryHeight();
+        requestAnimationFrame(postDictionaryHeight);
+        setTimeout(postDictionaryHeight, 160);
+        setTimeout(postDictionaryHeight, 520);
+      };
+
+      window.addEventListener("load", scheduleDictionaryHeight);
+      window.addEventListener("resize", scheduleDictionaryHeight);
+      window.addEventListener("message", (event) => {
+        if (event.data?.type === "request-dictionary-height") scheduleDictionaryHeight();
+        if (event.data?.type === "dictionary-theme") {
+          const nextTheme = event.data.theme;
+          if (nextTheme === "dark" || nextTheme === "light") {
+            document.documentElement.dataset.theme = nextTheme;
+            scheduleDictionaryHeight();
+          }
+        }
+      });
+      document.addEventListener("input", scheduleDictionaryHeight, true);
+      document.addEventListener("change", scheduleDictionaryHeight, true);
+      document.addEventListener("click", scheduleDictionaryHeight, true);
+
+      if ("ResizeObserver" in window) {
+        const observer = new ResizeObserver(scheduleDictionaryHeight);
+        observer.observe(document.documentElement);
+        observer.observe(document.body);
+      }
+
+      if ("MutationObserver" in window) {
+        const observer = new MutationObserver(scheduleDictionaryHeight);
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+      }
+    </script>
+  </body>
+</html>

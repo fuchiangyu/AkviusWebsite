@@ -19,8 +19,8 @@
         <div class="nav-links">
           <a href="../index.html" data-page="home">Home</a>
           <a href="../categories/index.html" data-page="categories">Categories</a>
+          <a href="../stats/index.html" data-page="stats">Stats</a>
           <a href="index.html" data-page="timeline">Timeline</a>
-          <a href="../about/index.html" data-page="about">About</a>
         </div>
         <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
           <span class="theme-toggle-sun">&#9728;</span>
@@ -33,9 +33,13 @@
       <section class="section page-section timeline-section">
         <div class="curved-timeline" aria-label="Article publishing timeline">
           <div class="timeline-intro">
-            <p class="eyebrow">Timeline</p>
-            <h1 class="page-title">Published Articles</h1>
-            <p>A chronological stream of notes, essays, and updates.</p>
+            <p class="eyebrow" data-text-key="timelineEyebrow">Timeline</p>
+            <h1 class="page-title" data-text-key="timelineTitle">Site Timeline</h1>
+            <p>A chronological stream of posts, version notes, and updates.</p>
+            <div class="timeline-updates" aria-label="Latest updated posts">
+              <span data-text-key="newUpdates">New updates</span>
+              <div class="timeline-update-list" data-timeline-updates></div>
+            </div>
           </div>
 
           <div class="timeline-track" data-timeline-track aria-live="polite">
@@ -54,9 +58,11 @@
     <script src="../assets/js/site-data.js"></script>
     <script src="../assets/js/site-config.js"></script>
     <script src="../assets/js/site-stats.js"></script>
+    <script src="../assets/js/site-translations.js"></script>
+    <script src="../assets/js/translations/zh-hant-map.js"></script>
+    <script src="../assets/js/translations/ug-transliteration.js"></script>
+    <script src="../assets/js/translations/common.js"></script>
+    <script src="../assets/js/translations/posts/chaghatay-dictionary.js"></script>
     <script src="../assets/js/script.js"></script>
   </body>
 </html>
-
-
-

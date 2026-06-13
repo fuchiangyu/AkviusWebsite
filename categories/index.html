@@ -19,8 +19,8 @@
         <div class="nav-links">
           <a href="../index.html" data-page="home">Home</a>
           <a href="index.html" data-page="categories">Categories</a>
+          <a href="../stats/index.html" data-page="stats">Stats</a>
           <a href="../timeline/index.html" data-page="timeline">Timeline</a>
-          <a href="../about/index.html" data-page="about">About</a>
         </div>
         <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
           <span class="theme-toggle-sun">&#9728;</span>
@@ -35,6 +35,13 @@
           <p class="eyebrow">Categories</p>
           <h1 class="page-title">Interest Shelves</h1>
         </div>
+        <section class="site-search" aria-label="Search categories and posts">
+          <label class="site-search-field">
+            <span>Search</span>
+            <input type="search" data-site-search placeholder="Search categories, tags, posts, tools..." autocomplete="off" />
+          </label>
+          <div class="site-search-results" data-site-search-results aria-live="polite" hidden></div>
+        </section>
         <div class="category-grid">
           <a class="category-card category-card-blue" id="languages" href="languages/index.html" aria-label="Open Languages subcategories">
             <div class="category-card-top">
@@ -53,7 +60,7 @@
             <h3>Languages</h3>
             <p>Language learning, scripts, names, grammar notes, and references.</p>
             <div class="category-card-footer">
-              <strong>128 items</strong>
+              <strong><span data-category-count="languages">0</span> <span data-category-count-label="languages">posts</span></strong>
             </div>
           </a>
           <a class="category-card category-card-violet" id="music" href="music/index.html" aria-label="Open Music subcategories">
@@ -70,7 +77,7 @@
             <h3>Music</h3>
             <p>Songs, lyrics, theory, playlists, and music inspiration.</p>
             <div class="category-card-footer">
-              <strong>342 items</strong>
+              <strong><span data-category-count="music">0</span> <span data-category-count-label="music">posts</span></strong>
             </div>
           </a>
           <a class="category-card category-card-gold" id="notes" href="notes/index.html" aria-label="Open Notes articles">
@@ -86,7 +93,7 @@
             <h3>Notes</h3>
             <p>Thoughts, writings, reflections, and daily jottings.</p>
             <div class="category-card-footer">
-              <strong>12 items</strong>
+              <strong><span data-category-count="notes">0</span> <span data-category-count-label="notes">posts</span></strong>
             </div>
           </a>
           <a class="category-card category-card-green" id="tools" href="tools/index.html" aria-label="Open Tools subcategories">
@@ -101,7 +108,41 @@
             <h3>Tools</h3>
             <p>Useful tools, links, snippets, and productivity helpers.</p>
             <div class="category-card-footer">
-              <strong>57 items</strong>
+              <strong><span data-category-count="tools">0</span> <span data-category-count-label="tools">items</span></strong>
+            </div>
+          </a>
+          <a class="category-card category-card-tags" id="tags" href="tags/index.html" aria-label="Open Tags">
+            <div class="category-card-top">
+              <span>05</span>
+              <div class="category-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M20 13.2 12.2 21 3 11.8V4h7.8L20 13.2Z" />
+                  <circle cx="8" cy="8" r="1.5" />
+                </svg>
+              </div>
+            </div>
+            <h3>Tags</h3>
+            <p>Post labels that connect related notes across shelves.</p>
+            <div class="category-card-footer">
+              <strong><span data-category-count="tags">0</span> <span data-category-count-label="tags">tags</span></strong>
+            </div>
+          </a>
+          <a class="category-card category-card-logs" id="logs" href="logs/index.html" aria-label="Open Logs">
+            <div class="category-card-top">
+              <span>06</span>
+              <div class="category-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 4h10l3 3v13H6Z" />
+                  <path d="M16 4v4h4" />
+                  <path d="M9 11h6" />
+                  <path d="M9 15h7" />
+                </svg>
+              </div>
+            </div>
+            <h3>Logs</h3>
+            <p>Version notes and site update records.</p>
+            <div class="category-card-footer">
+              <strong><span data-category-count="logs">0</span> <span data-category-count-label="logs">logs</span></strong>
             </div>
           </a>
         </div>
@@ -115,8 +156,11 @@
     <script src="../assets/js/site-data.js"></script>
     <script src="../assets/js/site-config.js"></script>
     <script src="../assets/js/site-stats.js"></script>
+    <script src="../assets/js/site-translations.js"></script>
+    <script src="../assets/js/translations/zh-hant-map.js"></script>
+    <script src="../assets/js/translations/ug-transliteration.js"></script>
+    <script src="../assets/js/translations/common.js"></script>
+    <script src="../assets/js/translations/posts/chaghatay-dictionary.js"></script>
     <script src="../assets/js/script.js"></script>
   </body>
 </html>
-
-

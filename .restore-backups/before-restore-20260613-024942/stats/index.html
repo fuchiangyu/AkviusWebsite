@@ -1,0 +1,60 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stats | Akvius</title>
+    <meta name="description" content="Personal dashboard for Akvius." />
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+  </head>
+  <body data-page="stats">
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <button class="brand" type="button" aria-label="Open navigation" aria-expanded="false"><span class="brand-mark"><img src="../assets/img/avatar.png" alt="" /></span><span>Akvius</span></button>
+        <div class="nav-links"></div>
+        <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span class="theme-toggle-sun">&#9728;</span><span class="theme-toggle-moon">&#9790;</span></button>
+      </nav>
+    </header>
+
+    <main class="page-main">
+      <section class="section page-section stats-dashboard-section">
+        <div class="stats-copy">
+          <p class="eyebrow">Stats</p>
+          <h1 class="page-title">Personal dashboard for Akvius.</h1>
+          <p>A compact view of the person, site activity, published work, and the small systems behind this personal website.</p>
+        </div>
+        <div class="about-panel site-dashboard">
+          <div class="dashboard-grid">
+            <a class="dashboard-card" href="visits/index.html"><span class="dashboard-icon">?</span><strong data-total-visits>/</strong><p>Total visits</p></a>
+            <a class="dashboard-card" href="../timeline/index.html" aria-label="Open timeline"><span class="dashboard-icon">□</span><strong data-days-since>0 days</strong><p>Since founded</p></a>
+            <a class="dashboard-card" href="../categories/logs/index.html#v0-3"><span class="dashboard-icon">?</span><strong>V0.3</strong><p>Current version</p></a>
+            <a class="dashboard-card" data-top-liked-card href="#"><span class="dashboard-icon">?</span><strong data-top-liked-count>/</strong><p>Most liked post</p><small data-top-liked-title>No liked post yet</small></a>
+            <a class="dashboard-card" data-trending-tag-card href="../categories/tags/index.html"><span class="dashboard-icon">#</span><strong data-trending-tag-title>#Chaghatay</strong><p>Trending tag</p><small data-trending-tag-count>1 post</small></a>
+            <a class="dashboard-card" data-recent-update-card href="../categories/languages/chaghatay/posts/chaghatay-dictionary.html"><span class="dashboard-icon">≡</span><strong data-recent-update-title>Chaghatay Dictionary</strong><p>Recent update</p><small data-recent-update-date>2026/6/6</small></a>
+          </div>
+          <a class="dashboard-feature-card" data-new-update-post-card href="../categories/languages/chaghatay/posts/chaghatay-dictionary.html">
+            <span class="visual-label">New update post</span>
+            <time data-new-update-post-date>2026/6/6</time>
+            <h2 data-new-update-post-title>Chaghatay Dictionary</h2>
+            <p data-new-update-post-summary>A small website for looking up Chaghatay words.</p>
+            <div class="tag-row" data-new-update-post-tags></div>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; 2026 Akvius. Stay curious. Keep passions.</p>
+    </footer>
+
+    <script src="../assets/js/site-data.js"></script>
+    <script src="../assets/js/site-config.js"></script>
+    <script src="../assets/js/site-stats.js"></script>
+    <script src="../assets/js/site-translations.js"></script>
+    <script src="../assets/js/translations/zh-hant-map.js"></script>
+    <script src="../assets/js/translations/ug-transliteration.js"></script>
+    <script src="../assets/js/translations/common.js"></script>
+    <script src="../assets/js/translations/posts/chaghatay-dictionary.js"></script>
+    <script src="../assets/js/script.js"></script>
+  </body>
+</html>
