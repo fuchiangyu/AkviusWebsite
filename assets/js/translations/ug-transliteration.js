@@ -33,7 +33,7 @@
     const letters = {
       "\u0627": "a",
       "\u06d5": "e",
-      "\u06d0": "e",
+      "\u06d0": "ë",
       "\u0649": "i",
       "\u064a": "y",
       "\u0648": "o",
@@ -59,17 +59,26 @@
       "\u0646": "n",
       "\u06be": "h",
       "\u0647": "h",
-      "\u0621": "",
-      "\u0626": "",
+      "\u0621": "ʾ",
       "\u060c": ",",
     };
+    const uyghurLetterPattern = /[\u0621-\u063a\u0641-\u064a\u067e\u0686\u0698\u06ad\u06af\u06be\u06c6-\u06cb\u06d0\u06d5]/;
 
     let output = String(text ?? "");
     digraphs.forEach(([arabic, latin]) => {
       output = output.replaceAll(arabic, latin);
     });
 
-    return upperAfterSentenceBreak([...output].map((char) => letters[char] ?? char).join(""));
+    return upperAfterSentenceBreak(
+      [...output]
+        .map((char, index, chars) => {
+          if (char === "\u0626") {
+            return uyghurLetterPattern.test(chars[index - 1] || "") && uyghurLetterPattern.test(chars[index + 1] || "") ? "'" : "";
+          }
+          return letters[char] ?? char;
+        })
+        .join(""),
+    );
   };
 
   window.AkviusTranslations = window.AkviusTranslations || {};

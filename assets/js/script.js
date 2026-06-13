@@ -359,7 +359,6 @@ const staticTextBindings = [
   [".stats-copy .eyebrow", "statsEyebrow"],
   [".stats-copy .page-title", "statsTitle"],
   [".stats-copy > p", "statsText"],
-  ['[href$="visits/index.html"] > p', "totalVisits"],
   ['[href*="timeline/index.html"][aria-label="Open timeline"] > p', "sinceFounded"],
   ["[data-current-version-card] > p", "currentVersion"],
   ["[data-top-liked-card] > p", "mostLikedPost"],
@@ -900,14 +899,18 @@ const resolveThemeHref = (href) => {
 
 const renderTopLiked = () => {
   const top = siteData.getTopLikedTarget("post");
-  if (!top) {
+  const count = Number(top?.count || 0);
+  if (!top || count <= 0) {
     document.querySelectorAll("[data-top-liked-card]").forEach((card) => {
       card.removeAttribute("href");
+      card.classList.add("is-disabled");
+      card.setAttribute("aria-disabled", "true");
+      card.setAttribute("tabindex", "-1");
       card.setAttribute("aria-label", t("noLikedPost"));
     });
 
     document.querySelectorAll("[data-top-liked-count]").forEach((node) => {
-      node.textContent = "/";
+      node.textContent = count > 0 ? siteData.formatCount(count) : "/";
     });
 
     document.querySelectorAll("[data-top-liked-title]").forEach((node) => {
@@ -919,10 +922,14 @@ const renderTopLiked = () => {
 
   document.querySelectorAll("[data-top-liked-card]").forEach((card) => {
     card.href = resolveThemeHref(top.href);
+    card.classList.remove("is-disabled");
+    card.removeAttribute("aria-disabled");
+    card.removeAttribute("tabindex");
+    card.setAttribute("aria-label", top.title);
   });
 
   document.querySelectorAll("[data-top-liked-count]").forEach((node) => {
-    node.textContent = siteData.formatCount(top.count);
+    node.textContent = siteData.formatCount(count);
   });
 
   document.querySelectorAll("[data-top-liked-title]").forEach((node) => {

@@ -921,7 +921,7 @@ h1 {
   max-width: 760px;
   margin-bottom: 22px;
   font-size: clamp(64px, 6.8vw, 100px);
-  line-height: 1.02;
+  line-height: 1.1;
   letter-spacing: 0;
 }
 
@@ -3263,6 +3263,19 @@ h3 {
   transform: translateY(-2px);
 }
 
+.dashboard-card.is-disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
+.dashboard-card.is-disabled:hover,
+.dashboard-card.is-disabled:focus-visible {
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: none;
+  transform: none;
+}
+
 .dashboard-card .metric + p,
 .dashboard-card .metric-text + p {
   color: var(--ink);
@@ -3769,6 +3782,15 @@ h3 {
 :root[data-theme="dark"] .dashboard-feature-card:hover,
 :root[data-theme="dark"] .dashboard-feature-card:focus-visible {
   background: rgba(24, 34, 49, 0.82);
+}
+
+:root[data-theme="dark"] .dashboard-card.is-disabled,
+:root[data-theme="dark"] .dashboard-card.is-disabled:hover,
+:root[data-theme="dark"] .dashboard-card.is-disabled:focus-visible {
+  border-color: rgba(244, 247, 251, 0.12);
+  background: rgba(18, 26, 38, 0.72);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.18);
+  transform: none;
 }
 
 :root[data-theme="dark"] .dashboard-icon,
