@@ -110,6 +110,8 @@ const getLocalizedTagTitle = (tag) => {
       dictionary: "tagDictionary",
       tool: "tagTool",
       project: "tagProject",
+      uyghur: "tagUyghur",
+      vocabulary: "tagVocabulary",
     }[tagKey] || "";
   const translated = translationKey ? t(translationKey) : "";
   return translated && translated !== translationKey ? translated : String(tag || "");
@@ -376,24 +378,48 @@ const staticTextBindings = [
   [".chart-date-control > span", "statsDateLabel"],
   ["[data-log-page-title]", "logPageTitle"],
   [".article-toc-label", "contents"],
-  ['.article-toc-panel a[href="#overview"]', "postDictionaryOverview"],
-  ['.article-toc-panel a[href="#notes"]', "postDictionaryNotes"],
-  ['.article-toc-panel a[href="#features"]', "postDictionaryFeatures"],
-  ['.article-toc-panel a[href="#links"]', "postDictionaryLinks"],
-  [".article-reading-header .page-title", "postDictionaryTitle"],
-  ['.article-story-section#overview h2', "postDictionaryOverview"],
-  ['.article-story-section#overview p', "postDictionaryOverviewText"],
-  ['.article-story-section#notes h2', "postDictionaryNotes"],
-  ['.article-story-section#notes p:nth-of-type(1)', "postDictionaryNotesText1"],
-  ['.article-story-section#notes p:nth-of-type(2)', "postDictionaryNotesText2"],
-  ['.article-story-section#notes p:nth-of-type(3)', "postDictionaryNotesText3"],
-  ['.article-story-section#features h2', "postDictionaryFeatures"],
-  ['.article-story-section#features li:nth-of-type(1)', "postDictionaryFeatureSearch"],
-  ['.article-story-section#features li:nth-of-type(2)', "postDictionaryFeatureConverter"],
-  ['.article-story-section#links h2', "postDictionaryLinks"],
-  [".article-link-card strong", "postDictionaryTool"],
-  [".article-link-card span", "postDictionaryToolText"],
 ];
+
+const articleTextBindings = {
+  postDictionaryTitle: [
+    ['.article-toc-panel a[href="#overview"]', "postDictionaryOverview"],
+    ['.article-toc-panel a[href="#notes"]', "postDictionaryNotes"],
+    ['.article-toc-panel a[href="#features"]', "postDictionaryFeatures"],
+    ['.article-toc-panel a[href="#links"]', "postDictionaryLinks"],
+    [".article-reading-header .page-title", "postDictionaryTitle"],
+    ['.article-story-section#overview h2', "postDictionaryOverview"],
+    ['.article-story-section#overview p', "postDictionaryOverviewText"],
+    ['.article-story-section#notes h2', "postDictionaryNotes"],
+    ['.article-story-section#notes p:nth-of-type(1)', "postDictionaryNotesText1"],
+    ['.article-story-section#notes p:nth-of-type(2)', "postDictionaryNotesText2"],
+    ['.article-story-section#notes p:nth-of-type(3)', "postDictionaryNotesText3"],
+    ['.article-story-section#features h2', "postDictionaryFeatures"],
+    ['.article-story-section#features li:nth-of-type(1)', "postDictionaryFeatureSearch"],
+    ['.article-story-section#features li:nth-of-type(2)', "postDictionaryFeatureConverter"],
+    ['.article-story-section#links h2', "postDictionaryLinks"],
+    [".article-link-card strong", "postDictionaryTool"],
+    [".article-link-card span", "postDictionaryToolText"],
+  ],
+  postUyghurVocabTitle: [
+    ['.article-toc-panel a[href="#overview"]', "postDictionaryOverview"],
+    ['.article-toc-panel a[href="#notes"]', "postDictionaryNotes"],
+    ['.article-toc-panel a[href="#features"]', "postDictionaryFeatures"],
+    ['.article-toc-panel a[href="#links"]', "postDictionaryLinks"],
+    [".article-reading-header .page-title", "postUyghurVocabTitle"],
+    ['.article-story-section#overview h2', "postDictionaryOverview"],
+    ['.article-story-section#overview p', "postUyghurVocabOverviewLong"],
+    ['.article-story-section#notes h2', "postDictionaryNotes"],
+    ['.article-story-section#notes p:nth-of-type(1)', "postUyghurVocabNotesText1"],
+    ['.article-story-section#notes p:nth-of-type(2)', "postUyghurVocabNotesText2"],
+    ['.article-story-section#features h2', "postDictionaryFeatures"],
+    ['.article-story-section#features li:nth-of-type(1)', "postUyghurVocabFeatureCards"],
+    ['.article-story-section#features li:nth-of-type(2)', "postUyghurVocabFeatureQuiz"],
+    ['.article-story-section#features li:nth-of-type(3)', "postUyghurVocabFeatureProgress"],
+    ['.article-story-section#links h2', "postDictionaryLinks"],
+    [".article-link-card strong", "postUyghurVocabTitle"],
+    [".article-link-card span", "postUyghurVocabToolText"],
+  ],
+};
 
 const applyLanguage = () => {
   const meta = languageMeta[activeLanguage] || languageMeta.en;
@@ -409,6 +435,13 @@ const applyLanguage = () => {
   });
 
   staticTextBindings.forEach(([selector, key]) => {
+    document.querySelectorAll(selector).forEach((node) => {
+      node.textContent = t(key);
+    });
+  });
+
+  const articleTitleKey = document.querySelector(".article-reading-header .page-title")?.dataset.textKey || "";
+  (articleTextBindings[articleTitleKey] || []).forEach(([selector, key]) => {
     document.querySelectorAll(selector).forEach((node) => {
       node.textContent = t(key);
     });
@@ -658,7 +691,7 @@ const getLocalizedSearchItem = (item) => {
       Log: "navLogs",
     }[item.kind] || "";
 
-  if (item.key === "post-chaghatay-dictionary") {
+  if (item.kind === "Post") {
     return {
       kind: kindKey ? t(kindKey) : item.kind,
       title: getLocalizedPostTitle(siteData.postTargets.find((post) => post.key === item.key)),

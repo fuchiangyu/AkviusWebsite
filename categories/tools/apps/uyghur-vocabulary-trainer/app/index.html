@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Uyghur Vocabulary Trainer</title>
+    <script>
+      if (window.parent !== window) document.documentElement.classList.add("is-embedded");
+    </script>
+    <link rel="stylesheet" href="./vocab.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span>Uyghur Vocabulary</span>
+          <h1>Vocabulary Trainer</h1>
+        </div>
+
+        <label class="field">
+          <span>Word Bank</span>
+          <select id="bank-select"></select>
+        </label>
+
+        <section class="filter-block">
+          <div class="block-title">Level</div>
+          <div class="level-list" id="level-list"></div>
+        </section>
+
+        <section class="filter-block">
+          <div class="block-title">Mode</div>
+          <div class="segmented" id="mode-tabs">
+            <button type="button" class="active" data-mode="flashcard">Cards</button>
+            <button type="button" data-mode="quiz">Quiz</button>
+            <button type="button" data-mode="list">List</button>
+          </div>
+        </section>
+
+        <section class="filter-block">
+          <div class="block-title">Scope</div>
+          <label class="toggle-line"><input id="only-due" type="checkbox"><span>Unlearned / review only</span></label>
+          <label class="toggle-line"><input id="shuffle" type="checkbox" checked><span>Shuffle order</span></label>
+        </section>
+
+        <a class="back-link" href="../index.html" target="_top">Back to Tool Page</a>
+      </aside>
+
+      <section class="main-panel">
+        <header class="study-header">
+          <div class="title-block">
+            <p id="bank-description"></p>
+            <h2 id="active-title">Study Set</h2>
+          </div>
+          <div class="stats">
+            <div><strong id="total-count">0</strong><span>Words</span></div>
+            <div><strong id="known-count">0</strong><span>Known</span></div>
+            <div><strong id="fuzzy-count">0</strong><span>Fuzzy</span></div>
+            <div><strong id="progress-rate">0%</strong><span>Progress</span></div>
+          </div>
+        </header>
+
+        <section class="dashboard-row">
+          <div class="memory-panel">
+            <div class="memory-summary">
+              <div class="donut" id="memory-donut"></div>
+              <div class="legend" id="memory-legend"></div>
+            </div>
+          </div>
+          <div class="level-panel">
+            <div class="chart-title">Progress by Level</div>
+            <div id="level-chart"></div>
+          </div>
+        </section>
+
+        <section class="toolbar">
+          <label class="search-box">
+            <span>Search</span>
+            <input id="search" type="search" autocomplete="off" placeholder="Chinese / Uyghur / Latin / part of speech">
+          </label>
+          <div class="toolbar-actions">
+            <button id="reset-session" type="button">Reshuffle</button>
+            <button id="clear-progress" type="button" class="danger">Clear Progress</button>
+          </div>
+        </section>
+
+        <section class="mode-view active" data-view="flashcard">
+          <div class="card-wrap">
+            <article class="word-card" id="word-card">
+              <div class="card-top">
+                <div class="card-meta">
+                  <span id="card-level"></span>
+                  <span id="card-pos"></span>
+                </div>
+                <button class="script-toggle" id="latin-toggle" type="button" aria-pressed="false">Latin</button>
+              </div>
+              <div class="swipe-cue swipe-left">Don't know</div>
+              <div class="swipe-cue swipe-right">Known</div>
+              <div class="swipe-cue swipe-down">Fuzzy</div>
+              <div class="ug-word" id="card-ug"></div>
+              <button class="ghost" id="reveal" type="button">Show Meaning</button>
+              <div class="meaning" id="card-meaning" hidden>
+                <strong id="card-zh"></strong>
+                <span id="card-valency"></span>
+              </div>
+              <div class="review-actions">
+                <button type="button" class="review-button review-again" data-review="again" aria-label="Don't know">
+                  <span aria-hidden="true" class="review-icon">×</span>
+                  <span>Don't know</span>
+                </button>
+                <button type="button" class="review-button review-hard" data-review="hard" aria-label="Fuzzy">
+                  <span aria-hidden="true" class="review-icon">?</span>
+                  <span>Fuzzy</span>
+                </button>
+                <button type="button" class="review-button review-known" data-review="known" aria-label="Known">
+                  <span aria-hidden="true" class="review-icon">✓</span>
+                  <span>Known</span>
+                </button>
+              </div>
+            </article>
+            <div class="pager">
+              <button id="prev-card" type="button">Previous</button>
+              <span id="card-position">0 / 0</span>
+              <button id="next-card" type="button">Next</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="mode-view" data-view="quiz">
+          <div class="quiz-card">
+            <div class="quiz-word" id="quiz-word"></div>
+            <div class="quiz-meta" id="quiz-meta"></div>
+            <div class="choices" id="choices"></div>
+            <div class="quiz-result" id="quiz-result"></div>
+            <button id="next-quiz" type="button">Next Question</button>
+          </div>
+        </section>
+
+        <section class="mode-view" data-view="list">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Uyghur</th><th>Chinese</th><th>Part of Speech</th><th>Valency</th><th>Level</th><th>Status</th></tr>
+              </thead>
+              <tbody id="word-table"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+    <script src="./data/wordbanks.js"></script>
+    <script src="./vocab.js"></script>
+  </body>
+</html>

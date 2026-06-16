@@ -125,5 +125,56 @@
     tagDictionary: { en: "Dictionary", zhHans: "词典", zhHant: "詞典", ugTrad: "لۇغەت" },
     tagTool: { en: "Tool", zhHans: "工具", zhHant: "工具", ugTrad: "قورال" },
     tagProject: { en: "Project", zhHans: "项目", zhHant: "專案", ugTrad: "تۈر" },
+    tagUyghur: { en: "Uyghur", zhHans: "维吾尔语", zhHant: "維吾爾語", ugTrad: "ئۇيغۇرچە" },
+    tagVocabulary: { en: "Vocabulary", zhHans: "词汇", zhHant: "詞彙", ugTrad: "سۆزلۈك" },
+    postUyghurVocabTitle: { en: "Uyghur Vocabulary Trainer", zhHans: "维吾尔语背单词", zhHant: "維吾爾語背單詞", ugTrad: "ئۇيغۇرچە سۆز يادلاش" },
+    postUyghurVocabOverviewText: {
+      en: "A focused trainer for studying Uyghur common vocabulary with cards, quizzes, search, and local progress.",
+      zhHans: "一个用于学习维吾尔语常用词的背词工具，包含卡片、测验、搜索和本地进度。",
+      zhHant: "一個用於學習維吾爾語常用詞的背詞工具，包含卡片、測驗、搜尋和本地進度。",
+      ugTrad: "ئۇيغۇرچە كۆپ ئىشلىتىلىدىغان سۆزلەرنى كارتا، سىناق، ئىزدەش ۋە يەرلىك ئىلگىرىلەش بىلەن ئۆگىنىدىغان قورال.",
+    },
+    postUyghurVocabOverviewLong: {
+      en: "Uyghur Vocabulary Trainer is a compact study tool for reviewing common Uyghur words through cards, quizzes, and a searchable word list.",
+      zhHans: "Uyghur Vocabulary Trainer 是一个轻量背词工具，用卡片、测验和可搜索词表复习维吾尔语常用词。",
+      zhHant: "Uyghur Vocabulary Trainer 是一個輕量背詞工具，用卡片、測驗和可搜尋詞表複習維吾爾語常用詞。",
+      ugTrad: "Uyghur Vocabulary Trainer كارتىكا، سىناق ۋە ئىزدەشكە بولىدىغان سۆز تىزىملىكى ئارقىلىق ئۇيغۇرچە كۆپ ئىشلىتىلىدىغان سۆزلەرنى تەكرارلايدىغان يېنىك قورال.",
+    },
+    postUyghurVocabNotesText1: {
+      en: "The word bank is organized by learning level and includes Chinese meanings, parts of speech, Uyghur entries, and valency notes where available. The goal is quick daily review rather than a full dictionary.",
+      zhHans: "词库按学习等级整理，包含汉语释义、词性、维吾尔语词条，以及可用的支配信息。它面向日常快速复习，不是完整词典。",
+      zhHant: "詞庫按學習等級整理，包含漢語釋義、詞性、維吾爾語詞條，以及可用的支配資訊。它面向日常快速複習，不是完整詞典。",
+      ugTrad: "سۆز ئامبىرى ئۆگىنىش دەرىجىسى بويىچە رەتلەنگەن؛ خەنزۇچە مەنىسى، سۆز تۈرى، ئۇيغۇرچە سۆز ۋە بار بولسا باشقۇرۇش خاتىرىسىنى ئۆز ئىچىگە ئالىدۇ. نىشانى تولۇق لۇغەت ئەمەس، كۈندىلىك تېز تەكرارلاش.",
+    },
+    postUyghurVocabNotesText2: {
+      en: "Review progress is stored locally in the browser, so the tool can track known, fuzzy, and new words without requiring an account. The Latin display toggle is only a reading aid; the Uyghur-script entry is the main form to study.",
+      zhHans: "复习进度保存在浏览器本地，因此无需账号也能记录已掌握、模糊和新词。拉丁显示只是阅读辅助，维吾尔文字词条才是主要学习形式。",
+      zhHant: "複習進度保存在瀏覽器本地，因此無需帳號也能記錄已掌握、模糊和新詞。拉丁顯示只是閱讀輔助，維吾爾文字詞條才是主要學習形式。",
+      ugTrad: "تەكرارلاش ئىلگىرىلىشى تور كۆرگۈچتە ساقلىنىدۇ، شۇڭا ھېساباتسىزمۇ بىلىنگەن، تۇتۇق ۋە يېڭى سۆزلەر خاتىرىلىنىدۇ. لاتىنچە كۆرسىتىش پەقەت ئوقۇش ياردىمى؛ ئاساسلىق ئۆگىنىش شەكلى ئۇيغۇر يېزىقىدىكى سۆزدۇر.",
+    },
+    postUyghurVocabFeatureCards: {
+      en: "Card review with known, fuzzy, and again states",
+      zhHans: "用已掌握、模糊、再来一次三种状态复习卡片",
+      zhHant: "用已掌握、模糊、再來一次三種狀態複習卡片",
+      ugTrad: "بىلىندىم، تۇتۇق، قايتا دېگەن ھالەتلەر بىلەن كارتىكا تەكرارلاش",
+    },
+    postUyghurVocabFeatureQuiz: {
+      en: "Multiple-choice quiz and searchable word list",
+      zhHans: "选择题测验和可搜索词表",
+      zhHant: "選擇題測驗和可搜尋詞表",
+      ugTrad: "تاللاش سىنىقى ۋە ئىزدەشكە بولىدىغان سۆز تىزىملىكى",
+    },
+    postUyghurVocabFeatureProgress: {
+      en: "Level filters, shuffle mode, progress charts, and local progress storage",
+      zhHans: "等级筛选、乱序模式、进度图表和本地进度保存",
+      zhHant: "等級篩選、亂序模式、進度圖表和本地進度保存",
+      ugTrad: "دەرىجە سۈزگۈچى، ئارىلاشتۇرۇش، ئىلگىرىلەش جەدۋىلى ۋە يەرلىك ساقلاش",
+    },
+    postUyghurVocabToolText: {
+      en: "Open the Uyghur word card and quiz tool.",
+      zhHans: "打开维吾尔语单词卡片和测验工具。",
+      zhHant: "打開維吾爾語單詞卡片和測驗工具。",
+      ugTrad: "ئۇيغۇرچە سۆز كارتىسى ۋە سىناق قورالىنى ئېچىڭ.",
+    },
   });
 })();

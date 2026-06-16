@@ -18,6 +18,19 @@ window.AkviusData = (() => {
               summary: "postDictionaryOverviewText",
             },
           },
+          {
+            key: "post-uyghur-vocabulary-trainer",
+            title: "Uyghur Vocabulary Trainer",
+            href: "categories/languages/uyghur/posts/uyghur-vocabulary-trainer.html",
+            category: "Languages",
+            publishedAt: "2026-06-17",
+            baseLikes: 0,
+            tags: ["Uyghur", "Vocabulary", "Tool"],
+            translationKeys: {
+              title: "postUyghurVocabTitle",
+              summary: "postUyghurVocabOverviewText",
+            },
+          },
         ],
       },
       music: {
@@ -32,6 +45,16 @@ window.AkviusData = (() => {
             key: "tool-chaghatay-dictionary",
             title: "Chaghatay Dictionary Tool",
             href: "categories/tools/apps/chaghatay-dictionary/index.html",
+            description: "Working Chaghatay Dictionary app for looking up words.",
+            searchText: "Chaghatay Dictionary tool app lookup words",
+            baseLikes: 0,
+          },
+          {
+            key: "tool-uyghur-vocabulary-trainer",
+            title: "Uyghur Vocabulary Trainer",
+            href: "categories/tools/apps/uyghur-vocabulary-trainer/index.html",
+            description: "Flashcards and quizzes for Uyghur words.",
+            searchText: "Uyghur Vocabulary Trainer flashcards quiz word bank progress",
             baseLikes: 0,
           },
         ],
@@ -116,6 +139,8 @@ window.AkviusData = (() => {
   const postSummaries = {
     "post-chaghatay-dictionary":
       "A small website for looking up Chaghatay words. The data is based on A Dictionary of Early Middle Turkic.",
+    "post-uyghur-vocabulary-trainer":
+      "A focused trainer for studying Uyghur common vocabulary with cards, quizzes, search, and local progress.",
   };
 
   const allPosts = Object.values(siteContent.categories).flatMap((category) => category.posts || []);
@@ -167,8 +192,8 @@ window.AkviusData = (() => {
         kind: "Tool",
         title: app.title,
         href: app.href,
-        description: "Working Chaghatay Dictionary app for looking up words.",
-        searchText: `${app.title} Chaghatay Dictionary tool app lookup words`,
+        description: app.description || "Working tool app.",
+        searchText: `${app.title} ${app.searchText || app.description || "tool app"}`,
       })),
     ),
     ...versions.map((version) => ({
