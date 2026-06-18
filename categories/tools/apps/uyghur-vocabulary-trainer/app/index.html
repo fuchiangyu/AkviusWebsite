@@ -7,7 +7,7 @@
     <script>
       if (window.parent !== window) document.documentElement.classList.add("is-embedded");
     </script>
-    <link rel="stylesheet" href="./vocab.css">
+    <link rel="stylesheet" href="./vocab.css?v=20260618a">
   </head>
   <body>
     <main class="app-shell">
@@ -42,7 +42,6 @@
           <label class="toggle-line"><input id="shuffle" type="checkbox" checked><span>Shuffle order</span></label>
         </section>
 
-        <a class="back-link" href="../index.html" target="_top">Back to Tool Page</a>
       </aside>
 
       <section class="main-panel">
@@ -54,7 +53,7 @@
           <div class="stats">
             <div><strong id="total-count">0</strong><span>Words</span></div>
             <div><strong id="known-count">0</strong><span>Known</span></div>
-            <div><strong id="fuzzy-count">0</strong><span>Fuzzy</span></div>
+            <div><strong id="fuzzy-count">0</strong><span>Learning</span></div>
             <div><strong id="progress-rate">0%</strong><span>Progress</span></div>
           </div>
         </header>
@@ -91,16 +90,16 @@
                   <span id="card-level"></span>
                   <span id="card-pos"></span>
                 </div>
-                <button class="script-toggle" id="latin-toggle" type="button" aria-pressed="false">Latin</button>
+                <button class="script-toggle" id="latin-toggle" type="button" aria-pressed="false" aria-label="Switch to Latin Uyghur">UL</button>
               </div>
               <div class="swipe-cue swipe-left">Don't know</div>
               <div class="swipe-cue swipe-right">Known</div>
               <div class="swipe-cue swipe-down">Fuzzy</div>
               <div class="ug-word" id="card-ug"></div>
+              <div class="card-valency" id="card-valency" hidden></div>
               <button class="ghost" id="reveal" type="button">Show Meaning</button>
               <div class="meaning" id="card-meaning" hidden>
                 <strong id="card-zh"></strong>
-                <span id="card-valency"></span>
               </div>
               <div class="review-actions">
                 <button type="button" class="review-button review-again" data-review="again" aria-label="Don't know">
@@ -147,7 +146,7 @@
         </section>
       </section>
     </main>
-    <script src="./data/wordbanks.js"></script>
-    <script src="./vocab.js"></script>
+    <script src="./data/wordbanks.js?v=20260618a"></script>
+    <script src="./vocab.js?v=20260618a"></script>
   </body>
 </html>

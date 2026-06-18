@@ -127,6 +127,12 @@
     tagProject: { en: "Project", zhHans: "项目", zhHant: "專案", ugTrad: "تۈر" },
     tagUyghur: { en: "Uyghur", zhHans: "维吾尔语", zhHant: "維吾爾語", ugTrad: "ئۇيغۇرچە" },
     tagVocabulary: { en: "Vocabulary", zhHans: "词汇", zhHant: "詞彙", ugTrad: "سۆزلۈك" },
+    toolUyghurVocabDesc: {
+      en: "Flashcards and quizzes for Uyghur words.",
+      zhHans: "维吾尔语单词卡片与测验。",
+      zhHant: "維吾爾語單詞卡片與測驗。",
+      ugTrad: "ئۇيغۇرچە سۆز كارتىسى ۋە سىناق.",
+    },
     postUyghurVocabTitle: { en: "Uyghur Vocabulary Trainer", zhHans: "维吾尔语背单词", zhHant: "維吾爾語背單詞", ugTrad: "ئۇيغۇرچە سۆز يادلاش" },
     postUyghurVocabOverviewText: {
       en: "A focused trainer for studying Uyghur common vocabulary with cards, quizzes, search, and local progress.",

@@ -47,9 +47,6 @@ select, input:not([type="checkbox"]) { width: 100%; min-height: 42px; border: 1p
 .script-toggle { color: var(--green-dark); border: 1px solid var(--line-strong); background: #fff; }
 .script-toggle:hover { background: #f1f7f3; }
 .script-toggle.active { color: #fff; border-color: var(--blue); background: var(--blue); }
-.back-link { margin-top: auto; color: var(--green-dark); font-weight: 800; text-decoration: none; }
-.back-link:hover { text-decoration: underline; }
-
 .main-panel { display: grid; align-content: start; gap: 16px; width: min(1180px, 100%); padding: 22px; }
 .study-header, .memory-panel, .level-panel, .toolbar, .word-card, .quiz-card, .table-wrap { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); box-shadow: var(--shadow); }
 .study-header { display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 0.85fr); gap: 18px; align-items: center; padding: 18px; }
@@ -99,10 +96,14 @@ h2 { overflow-wrap: anywhere; font-size: 25px; line-height: 1.25; }
 .card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-weight: 800; }
 .card-meta { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
 .card-meta span { border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; background: #f8fffb; }
-.card-top .script-toggle { min-height: 34px; min-width: 86px; border-radius: 999px; padding: 0 12px; }
+.card-top .script-toggle { display: inline-grid; place-items: center; min-height: 34px; min-width: 52px; border-radius: 999px; padding: 0 12px; font-size: 15px; letter-spacing: 0; line-height: 1; }
+.card-top .script-toggle.traditional-icon { direction: rtl; font-family: "Microsoft Uighur", "Noto Naskh Arabic", "Segoe UI", serif; font-size: 22px; }
 .ug-word, .quiz-word { direction: rtl; color: #101714; font-family: "Segoe UI", "Microsoft Uighur", "Noto Naskh Arabic", serif; font-size: clamp(48px, 7vw, 84px); line-height: 1.25; text-align: center; overflow-wrap: anywhere; }
 .ug-word { align-self: center; }
 .ug-word.latin-text, .quiz-word.latin-text { direction: ltr; font-family: "Segoe UI", Arial, sans-serif; letter-spacing: 0; }
+.card-valency { justify-self: center; max-width: min(620px, 100%); border: 1px solid var(--line); border-radius: 999px; padding: 7px 13px; color: var(--muted); background: #f8fffb; font-family: "Segoe UI", "Microsoft Uighur", "Noto Naskh Arabic", serif; font-size: 18px; font-weight: 800; line-height: 1.35; text-align: center; direction: rtl; overflow-wrap: anywhere; }
+.card-valency.latin-text { direction: ltr; font-family: "Segoe UI", Arial, sans-serif; }
+.card-valency[hidden] { display: none; }
 .ghost { justify-self: center; color: var(--green-dark); border: 1px solid var(--line-strong); background: #fff; }
 .ghost:hover { background: #f1f7f3; }
 .meaning { display: grid; gap: 8px; border-top: 1px solid var(--line); padding-top: 16px; text-align: center; }
@@ -146,6 +147,8 @@ th, td { border-bottom: 1px solid #e4e9e4; padding: 10px 12px; text-align: left;
 th { position: sticky; top: 0; z-index: 1; color: #34463c; background: #f3f7f4; font-size: 13px; }
 td:first-child { direction: rtl; font-family: "Segoe UI", "Microsoft Uighur", "Noto Naskh Arabic", serif; font-size: 22px; }
 td.latin-text:first-child { direction: ltr; font-family: "Segoe UI", Arial, sans-serif; font-size: 18px; }
+td.latin-text { direction: ltr; font-family: "Segoe UI", Arial, sans-serif; }
+td.uyghur-text { direction: rtl; font-family: "Segoe UI", "Microsoft Uighur", "Noto Naskh Arabic", serif; }
 .status-known { color: var(--green); font-weight: 850; }
 .status-fuzzy { color: var(--gold); font-weight: 850; }
 .status-new { color: var(--muted); font-weight: 750; }

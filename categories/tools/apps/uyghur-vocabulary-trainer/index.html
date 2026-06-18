@@ -31,18 +31,17 @@
         <div class="section-heading dictionary-tool-heading">
           <nav class="page-trail" aria-label="Breadcrumb" data-tool-trail>
             <a class="trail-home" href="../../../../index.html" aria-label="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8" /><path d="M5.5 10v10h13V10" /><path d="M9.5 20v-6h5v6" /></svg></a>
-            <a href="../../../index.html">Categories</a>
-            <a href="../../index.html">Tools</a>
-            <span>Uyghur Vocabulary Trainer</span>
+            <a href="../../../index.html" data-text-key="navCategories">Categories</a>
+            <a href="../../index.html" data-text-key="navTools">Tools</a>
+            <span data-text-key="postUyghurVocabTitle">Uyghur Vocabulary Trainer</span>
           </nav>
         </div>
-        <div class="dictionary-frame-panel">
+        <div class="dictionary-frame-panel vocab-frame-panel">
           <iframe
-            id="uyghurVocabFrame"
             title="Uyghur Vocabulary Trainer"
-            src="app/index.html?v=20260617a"
+            src="app/index.html?v=20260618a"
             loading="eager"
-            scrolling="no"
+            scrolling="auto"
           ></iframe>
         </div>
         <div class="tool-page-actions">
@@ -57,38 +56,20 @@
     </main>
     <footer class="site-footer"><p>&copy; 2026 Akvius. Stay curious. Keep passions.</p></footer>
     <script>
-      const uyghurVocabFrame = document.querySelector("#uyghurVocabFrame");
       const source = new URLSearchParams(window.location.search).get("source");
       const toolTrail = document.querySelector("[data-tool-trail]");
-      let lastUyghurVocabHeight = 0;
 
       if (source === "uyghur-post" && toolTrail) {
         toolTrail.innerHTML = `
           <a class="trail-home" href="../../../../index.html" aria-label="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8" /><path d="M5.5 10v10h13V10" /><path d="M9.5 20v-6h5v6" /></svg></a>
-          <a href="../../../index.html">Categories</a>
-          <a href="../../../languages/index.html">Languages</a>
-          <a href="../../../languages/uyghur/index.html">Uyghur</a>
-          <a href="../../../languages/uyghur/posts/uyghur-vocabulary-trainer.html">Uyghur Vocabulary Trainer</a>
-          <span>Tool</span>
+          <a href="../../../index.html" data-text-key="navCategories">Categories</a>
+          <a href="../../../languages/index.html" data-text-key="navLanguages">Languages</a>
+          <a href="../../../languages/uyghur/index.html" data-text-key="navUyghur">Uyghur</a>
+          <a href="../../../languages/uyghur/posts/uyghur-vocabulary-trainer.html" data-post-title="post-uyghur-vocabulary-trainer">Uyghur Vocabulary Trainer</a>
+          <span data-text-key="navTools">Tool</span>
         `;
       }
 
-      function requestUyghurVocabHeight() {
-        uyghurVocabFrame?.contentWindow?.postMessage({ type: "request-uyghur-vocab-height" }, "*");
-      }
-
-      uyghurVocabFrame?.addEventListener("load", requestUyghurVocabHeight);
-      window.addEventListener("resize", requestUyghurVocabHeight);
-      window.addEventListener("message", (event) => {
-        if (event.source !== uyghurVocabFrame?.contentWindow) return;
-        if (event.data?.type !== "uyghur-vocab-height") return;
-        const height = Number(event.data.height);
-        if (!Number.isFinite(height)) return;
-        const nextHeight = Math.ceil(height + 2);
-        if (Math.abs(nextHeight - lastUyghurVocabHeight) < 2) return;
-        lastUyghurVocabHeight = nextHeight;
-        uyghurVocabFrame.style.height = `${nextHeight}px`;
-      });
     </script>
     <script src="../../../../assets/js/site-data.js"></script>
     <script src="../../../../assets/js/site-config.js"></script>

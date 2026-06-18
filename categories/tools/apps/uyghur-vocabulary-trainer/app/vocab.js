@@ -56,7 +56,7 @@ let draggingCard = false;
 const storageKey = "uyghur-vocab-progress-v1";
 const progress = JSON.parse(localStorage.getItem(storageKey) || "{}");
 const levelRank = { "①": 1, "②": 2, "③": 3, "未分级": 9 };
-const memoryLabels = { known: "Known", fuzzy: "Fuzzy", new: "New" };
+const memoryLabels = { known: "Known", fuzzy: "Learning", new: "New" };
 const bankDisplay = {
   tq5000: {
     name: "Uyghur Common 5000 Words",
@@ -203,12 +203,19 @@ function displayUyghur(word) {
   return latinDisplay ? toLatinUyghur(marked) : marked;
 }
 
+function displayValency(word) {
+  const value = String(word?.valency || "").trim();
+  return latinDisplay ? toLatinUyghur(value) : value;
+}
+
 function syncLatinToggle() {
   if (!latinToggle) return;
   latinToggle.classList.toggle("active", latinDisplay);
+  latinToggle.classList.toggle("traditional-icon", latinDisplay);
   latinToggle.setAttribute("aria-pressed", String(latinDisplay));
-  latinToggle.textContent = latinDisplay ? "Uyghur" : "Latin";
-  latinToggle.title = latinDisplay ? "Show traditional Uyghur script" : "Show Latin Uyghur";
+  latinToggle.setAttribute("aria-label", latinDisplay ? "Switch to traditional Uyghur" : "Switch to Latin Uyghur");
+  latinToggle.textContent = latinDisplay ? "ئۇ" : "UL";
+  latinToggle.title = latinDisplay ? "Traditional Uyghur" : "Latin Uyghur";
 }
 
 function normalizePayload(rawPayload) {
@@ -271,7 +278,7 @@ function applyFilters() {
     if (!selectedLevels.has(word.level)) return false;
     if (onlyDueInput.checked && getWordProgress(word.id).score >= 4) return false;
     if (!query) return true;
-    return [word.zh, word.ug, toLatinUyghur(word.ug), word.pos, word.valency, word.level].some((value) =>
+    return [word.zh, word.ug, toLatinUyghur(word.ug), word.pos, word.valency, toLatinUyghur(word.valency), word.level].some((value) =>
       normalize(value).includes(query)
     );
   });
@@ -333,7 +340,7 @@ function renderMemoryCharts(summary, levels) {
   memoryDonut.dataset.center = `${knownPct}%`;
   memoryLegend.innerHTML = [
     ["known", "Known", summary.known, knownPct],
-    ["fuzzy", "Fuzzy", summary.fuzzy, fuzzyPct],
+    ["fuzzy", "Learning", summary.fuzzy, fuzzyPct],
     ["new", "New / Again", summary.new, newPct],
   ]
     .map(
@@ -359,7 +366,7 @@ function renderMemoryCharts(summary, levels) {
       return `
         <div class="level-bar-row">
           <span class="level-name">${escapeHtml(level)}</span>
-          <div class="stacked-bar" title="Known ${item.known}, fuzzy ${item.fuzzy}, new/again ${item.new}">
+          <div class="stacked-bar" title="Known ${item.known}, learning ${item.fuzzy}, new/again ${item.new}">
             <span class="bar-segment bar-known" style="width:${knownWidth}%"></span>
             <span class="bar-segment bar-fuzzy" style="width:${fuzzyWidth}%"></span>
             <span class="bar-segment bar-new" style="width:${newWidth}%"></span>
@@ -384,6 +391,7 @@ function renderCard() {
     cardUg.textContent = "No words";
     cardZh.textContent = "";
     cardValency.textContent = "";
+    cardValency.hidden = true;
     cardMeaning.hidden = true;
     cardPosition.textContent = "0 / 0";
     return;
@@ -393,7 +401,9 @@ function renderCard() {
   cardUg.textContent = displayUyghur(word);
   cardUg.classList.toggle("latin-text", latinDisplay);
   cardZh.textContent = word.zh;
-  cardValency.textContent = word.valency || "";
+  cardValency.textContent = displayValency(word);
+  cardValency.hidden = !cardValency.textContent;
+  cardValency.classList.toggle("latin-text", latinDisplay);
   cardMeaning.hidden = true;
   cardPosition.textContent = `${cardIndex + 1} / ${sessionWords.length}`;
 }
@@ -448,7 +458,7 @@ function renderTable() {
           <td data-label="Uyghur" class="${latinDisplay ? "latin-text" : ""}">${escapeHtml(displayUyghur(word))}</td>
           <td data-label="Chinese">${escapeHtml(word.zh)}</td>
           <td data-label="Part of Speech">${escapeHtml(word.pos)}</td>
-          <td data-label="Valency">${escapeHtml(word.valency || "")}</td>
+          <td data-label="Valency" class="${latinDisplay ? "latin-text" : "uyghur-text"}">${escapeHtml(displayValency(word))}</td>
           <td data-label="Level">${escapeHtml(word.level)}</td>
           <td data-label="Status" class="status-${state}">${label}</td>
         </tr>
@@ -617,28 +627,3 @@ choices.addEventListener("click", (event) => {
 nextQuiz.addEventListener("click", renderQuiz);
 
 init();
-
-let lastPostedEmbedHeight = 0;
-function postEmbedHeight() {
-  if (window.parent === window) return;
-  const height = Math.max(
-    document.documentElement.scrollHeight,
-    document.body?.scrollHeight || 0,
-    document.documentElement.offsetHeight,
-  );
-  if (Math.abs(height - lastPostedEmbedHeight) < 2) return;
-  lastPostedEmbedHeight = height;
-  window.parent.postMessage({ type: "uyghur-vocab-height", height }, "*");
-}
-
-window.addEventListener("load", postEmbedHeight);
-window.addEventListener("resize", postEmbedHeight);
-window.addEventListener("message", (event) => {
-  if (event.data?.type === "request-uyghur-vocab-height") postEmbedHeight();
-});
-
-new MutationObserver(() => window.requestAnimationFrame(postEmbedHeight)).observe(document.body, {
-  attributes: true,
-  childList: true,
-  subtree: true,
-});
