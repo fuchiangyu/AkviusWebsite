@@ -2839,6 +2839,13 @@ h3 {
   overflow: auto;
 }
 
+@media (max-width: 760px) {
+  .vocab-frame-panel iframe {
+    height: calc(100vh - 126px);
+    min-height: 520px;
+  }
+}
+
 .tool-page-actions {
   display: flex;
   justify-content: flex-end;

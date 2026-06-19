@@ -51,7 +51,8 @@ let reviewClickLocked = false;
 let quizAnswered = false;
 let dragStart = null;
 let dragCurrent = null;
-let draggingCard = false;
+let dragPointerId = null;
+let dragAxis = null;
 
 const storageKey = "uyghur-vocab-progress-v1";
 const progress = JSON.parse(localStorage.getItem(storageKey) || "{}");
@@ -412,15 +413,15 @@ function resetCardDrag() {
   if (!wordCard) return;
   dragStart = null;
   dragCurrent = null;
-  draggingCard = false;
-  wordCard.classList.remove("dragging", "swipe-preview-left", "swipe-preview-right", "swipe-preview-down");
+  dragPointerId = null;
+  dragAxis = null;
+  wordCard.classList.remove("dragging", "swipe-preview-left", "swipe-preview-right");
   wordCard.style.transform = "";
 }
 
-function updateSwipePreview(deltaX, deltaY) {
-  wordCard.classList.toggle("swipe-preview-right", deltaX > 70 && Math.abs(deltaX) > Math.abs(deltaY));
-  wordCard.classList.toggle("swipe-preview-left", deltaX < -70 && Math.abs(deltaX) > Math.abs(deltaY));
-  wordCard.classList.toggle("swipe-preview-down", deltaY > 80 && Math.abs(deltaY) > Math.abs(deltaX));
+function updateSwipePreview(deltaX) {
+  wordCard.classList.toggle("swipe-preview-right", deltaX > 70);
+  wordCard.classList.toggle("swipe-preview-left", deltaX < -70);
 }
 
 function finishCardDrag() {
@@ -433,14 +434,12 @@ function finishCardDrag() {
   const absX = Math.abs(deltaX);
   const absY = Math.abs(deltaY);
   let review = null;
-  if (absX > absY && absX > 90) review = deltaX > 0 ? "known" : "again";
-  if (absY > absX && deltaY > 100) review = "hard";
+  if (dragAxis === "x" && absX > 90 && absX > absY * 1.25) review = deltaX > 0 ? "known" : "again";
   if (review) {
-    const exitX = review === "known" ? 420 : review === "again" ? -420 : deltaX;
-    const exitY = review === "hard" ? 420 : deltaY;
-    const exitRotation = review === "hard" ? 0 : exitX / 20;
+    const exitX = review === "known" ? 420 : -420;
+    const exitRotation = exitX / 20;
     wordCard.classList.remove("dragging");
-    wordCard.style.transform = `translate(${exitX}px, ${exitY}px) rotate(${exitRotation}deg)`;
+    wordCard.style.transform = `translate(${exitX}px, 0) rotate(${exitRotation}deg)`;
     window.setTimeout(() => reviewActiveWord(review), 120);
     return;
   }
@@ -575,19 +574,31 @@ wordCard.addEventListener("pointerdown", (event) => {
   if (!activeWord() || reviewClickLocked) return;
   dragStart = { x: event.clientX, y: event.clientY };
   dragCurrent = dragStart;
-  draggingCard = true;
-  wordCard.classList.add("dragging");
-  wordCard.setPointerCapture(event.pointerId);
+  dragPointerId = event.pointerId;
+  dragAxis = null;
 });
 
 wordCard.addEventListener("pointermove", (event) => {
-  if (!draggingCard || !dragStart) return;
+  if (event.pointerId !== dragPointerId || !dragStart) return;
   dragCurrent = { x: event.clientX, y: event.clientY };
   const deltaX = dragCurrent.x - dragStart.x;
   const deltaY = dragCurrent.y - dragStart.y;
+  const absX = Math.abs(deltaX);
+  const absY = Math.abs(deltaY);
+
+  if (!dragAxis && (absX > 10 || absY > 10)) {
+    dragAxis = absX > absY * 1.35 ? "x" : "y";
+    if (dragAxis === "x") {
+      wordCard.classList.add("dragging");
+      wordCard.setPointerCapture(event.pointerId);
+    }
+  }
+
+  if (dragAxis !== "x") return;
+  event.preventDefault();
   const rotation = Math.max(-12, Math.min(12, deltaX / 18));
-  wordCard.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg)`;
-  updateSwipePreview(deltaX, deltaY);
+  wordCard.style.transform = `translate(${deltaX}px, 0) rotate(${rotation}deg)`;
+  updateSwipePreview(deltaX);
 });
 
 wordCard.addEventListener("pointerup", finishCardDrag);
