@@ -1,5 +1,16 @@
 const bankSelect = document.querySelector("#bank-select");
-const levelList = document.querySelector("#level-list");
+const levelSelect = document.querySelector("#level-select");
+const launchScreen = document.querySelector("#launch-screen");
+const appShell = document.querySelector("#app-shell");
+const launchBankSelect = document.querySelector("#launch-bank-select");
+const launchLevelSelect = document.querySelector("#launch-level-select");
+const launchSearchInput = document.querySelector("#launch-search");
+const launchModes = document.querySelector(".launch-modes");
+const changeSetup = document.querySelector("#change-setup");
+const launchTotalCount = document.querySelector("#launch-total-count");
+const launchKnownCount = document.querySelector("#launch-known-count");
+const launchLearningCount = document.querySelector("#launch-learning-count");
+const launchProgressRate = document.querySelector("#launch-progress-rate");
 const bankDescription = document.querySelector("#bank-description");
 const activeTitle = document.querySelector("#active-title");
 const totalCount = document.querySelector("#total-count");
@@ -64,6 +75,15 @@ const bankDisplay = {
     description: "Grouped by original levels ①②③, with Chinese meanings, parts of speech, Uyghur entries, and valency notes.",
   },
 };
+
+function reportEmbedHeight() {
+  if (window.parent === window) return;
+  window.requestAnimationFrame(() => {
+    const activeSurface = launchScreen.hidden ? appShell : launchScreen;
+    const height = Math.ceil(activeSurface.getBoundingClientRect().height);
+    window.parent.postMessage({ type: "uyghur-vocabulary-trainer:resize", height }, "*");
+  });
+}
 
 function saveProgress() {
   localStorage.setItem(storageKey, JSON.stringify(progress));
@@ -250,9 +270,11 @@ function selectedBank() {
 }
 
 function renderBankOptions() {
-  bankSelect.innerHTML = payload.banks
+  const options = payload.banks
     .map((bank) => `<option value="${escapeHtml(bank.id)}">${escapeHtml(displayBankName(bank))}</option>`)
     .join("");
+  bankSelect.innerHTML = options;
+  launchBankSelect.innerHTML = options;
   currentBank = selectedBank();
 }
 
@@ -260,17 +282,46 @@ function renderLevelOptions() {
   const ordered = Object.keys(currentBank.levels).sort((a, b) => {
     return (levelRank[a] || 5) - (levelRank[b] || 5);
   });
-  selectedLevels = new Set(ordered.filter((level) => level !== "未分级"));
-  levelList.innerHTML = ordered
-    .map(
-      (level) => `
-        <label class="level-item">
-          <span><input type="checkbox" value="${escapeHtml(level)}" ${selectedLevels.has(level) ? "checked" : ""}> ${escapeHtml(level)}</span>
-          <span>${currentBank.levels[level]}</span>
-        </label>
-      `
-    )
-    .join("");
+  const selectable = ordered.filter((level) => level !== "未分级");
+  const levelOptions = [
+    `<option value="all">All levels (${selectable.reduce((sum, level) => sum + currentBank.levels[level], 0)})</option>`,
+    ...selectable.map((level) => `<option value="${escapeHtml(level)}">${escapeHtml(level)} (${currentBank.levels[level]})</option>`),
+  ].join("");
+  levelSelect.innerHTML = levelOptions;
+  launchLevelSelect.innerHTML = levelOptions;
+  selectedLevels = new Set(selectable);
+}
+
+function syncLevelSelection(value) {
+  const selectable = Object.keys(currentBank.levels).filter((level) => level !== "未分级");
+  selectedLevels = value === "all" ? new Set(selectable) : new Set([value]);
+  levelSelect.value = value;
+  launchLevelSelect.value = value;
+}
+
+function setMode(nextMode) {
+  mode = nextMode;
+  modeTabs.querySelectorAll("button").forEach((item) => item.classList.toggle("active", item.dataset.mode === mode));
+  renderMode();
+}
+
+function startStudy(nextMode) {
+  syncLevelSelection(launchLevelSelect.value);
+  applyFilters();
+  appShell.hidden = false;
+  launchScreen.hidden = true;
+  setMode(nextMode);
+  window.scrollTo(0, 0);
+}
+
+function showSetup() {
+  launchBankSelect.value = bankSelect.value;
+  launchLevelSelect.value = levelSelect.value;
+  launchSearchInput.value = searchInput.value;
+  appShell.hidden = true;
+  launchScreen.hidden = false;
+  window.scrollTo(0, 0);
+  reportEmbedHeight();
 }
 
 function applyFilters() {
@@ -296,6 +347,10 @@ function updateStats() {
   knownCount.textContent = filteredSummary.known;
   fuzzyCount.textContent = filteredSummary.fuzzy;
   progressRate.textContent = `${Math.round((known / currentBank.words.length) * 100)}%`;
+  launchTotalCount.textContent = filteredWords.length;
+  launchKnownCount.textContent = filteredSummary.known;
+  launchLearningCount.textContent = filteredSummary.fuzzy;
+  launchProgressRate.textContent = progressRate.textContent;
   const levels = [...selectedLevels].join(" ");
   const bankName = displayBankName(currentBank);
   activeTitle.textContent = levels ? `${bankName} · ${levels}` : bankName;
@@ -415,13 +470,14 @@ function resetCardDrag() {
   dragCurrent = null;
   dragPointerId = null;
   dragAxis = null;
-  wordCard.classList.remove("dragging", "swipe-preview-left", "swipe-preview-right");
+  wordCard.classList.remove("dragging", "swipe-preview-left", "swipe-preview-right", "swipe-preview-vertical");
   wordCard.style.transform = "";
 }
 
-function updateSwipePreview(deltaX) {
+function updateSwipePreview(deltaX, deltaY) {
   wordCard.classList.toggle("swipe-preview-right", deltaX > 70);
   wordCard.classList.toggle("swipe-preview-left", deltaX < -70);
+  wordCard.classList.toggle("swipe-preview-vertical", Math.abs(deltaY) > 70);
 }
 
 function finishCardDrag() {
@@ -435,11 +491,13 @@ function finishCardDrag() {
   const absY = Math.abs(deltaY);
   let review = null;
   if (dragAxis === "x" && absX > 90 && absX > absY * 1.25) review = deltaX > 0 ? "known" : "again";
+  if (dragAxis === "y" && absY > 90 && absY > absX * 1.25) review = "hard";
   if (review) {
-    const exitX = review === "known" ? 420 : -420;
+    const exitX = review === "known" ? 420 : review === "again" ? -420 : 0;
+    const exitY = review === "hard" ? (deltaY > 0 ? 420 : -420) : 0;
     const exitRotation = exitX / 20;
     wordCard.classList.remove("dragging");
-    wordCard.style.transform = `translate(${exitX}px, 0) rotate(${exitRotation}deg)`;
+    wordCard.style.transform = `translate(${exitX}px, ${exitY}px) rotate(${exitRotation}deg)`;
     window.setTimeout(() => reviewActiveWord(review), 120);
     return;
   }
@@ -497,6 +555,7 @@ function renderMode() {
   if (mode === "flashcard") renderCard();
   if (mode === "quiz") renderQuiz();
   if (mode === "list") renderTable();
+  reportEmbedHeight();
 }
 
 async function init() {
@@ -531,12 +590,31 @@ bankSelect.addEventListener("change", () => {
   applyFilters();
 });
 
-levelList.addEventListener("change", () => {
-  selectedLevels = new Set([...levelList.querySelectorAll("input:checked")].map((input) => input.value));
+launchBankSelect.addEventListener("change", () => {
+  bankSelect.value = launchBankSelect.value;
+  currentBank = selectedBank();
+  renderLevelOptions();
+});
+
+levelSelect.addEventListener("change", () => {
+  syncLevelSelection(levelSelect.value);
   applyFilters();
 });
 
-searchInput.addEventListener("input", applyFilters);
+launchLevelSelect.addEventListener("change", () => {
+  syncLevelSelection(launchLevelSelect.value);
+  applyFilters();
+});
+
+searchInput.addEventListener("input", () => {
+  launchSearchInput.value = searchInput.value;
+  applyFilters();
+});
+
+launchSearchInput.addEventListener("input", () => {
+  searchInput.value = launchSearchInput.value;
+  applyFilters();
+});
 onlyDueInput.addEventListener("change", applyFilters);
 shuffleInput.addEventListener("change", applyFilters);
 
@@ -544,10 +622,16 @@ modeTabs.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-mode]");
   if (!button) return;
   if (mode === button.dataset.mode) return;
-  mode = button.dataset.mode;
-  modeTabs.querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === button));
-  renderMode();
+  setMode(button.dataset.mode);
 });
+
+launchModes.addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-start-mode]");
+  if (!button) return;
+  startStudy(button.dataset.startMode);
+});
+
+changeSetup.addEventListener("click", showSetup);
 
 revealButton.addEventListener("click", () => {
   cardMeaning.hidden = false;
@@ -588,17 +672,19 @@ wordCard.addEventListener("pointermove", (event) => {
 
   if (!dragAxis && (absX > 10 || absY > 10)) {
     dragAxis = absX > absY * 1.35 ? "x" : "y";
-    if (dragAxis === "x") {
+    if (dragAxis) {
       wordCard.classList.add("dragging");
       wordCard.setPointerCapture(event.pointerId);
     }
   }
 
-  if (dragAxis !== "x") return;
+  if (!dragAxis) return;
   event.preventDefault();
-  const rotation = Math.max(-12, Math.min(12, deltaX / 18));
-  wordCard.style.transform = `translate(${deltaX}px, 0) rotate(${rotation}deg)`;
-  updateSwipePreview(deltaX);
+  const rotation = dragAxis === "x" ? Math.max(-12, Math.min(12, deltaX / 18)) : 0;
+  const translateX = dragAxis === "x" ? deltaX : 0;
+  const translateY = dragAxis === "y" ? deltaY : 0;
+  wordCard.style.transform = `translate(${translateX}px, ${translateY}px) rotate(${rotation}deg)`;
+  updateSwipePreview(deltaX, deltaY);
 });
 
 wordCard.addEventListener("pointerup", finishCardDrag);

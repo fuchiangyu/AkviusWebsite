@@ -8,6 +8,16 @@
     <link rel="stylesheet" href="../../../../assets/css/styles.css" />
   </head>
   <body data-page="categories">
+    <script>
+      window.addEventListener("message", (event) => {
+        if (event.data?.type !== "uyghur-vocabulary-trainer:resize") return;
+        const frame = document.querySelector(".vocab-frame-panel iframe");
+        const contentHeight = Number(event.data.height);
+        if (!frame || !Number.isFinite(contentHeight)) return;
+        const height = Math.max(320, Math.min(contentHeight + 2, 900));
+        frame.style.height = `${height}px`;
+      });
+    </script>
     <header class="site-header">
       <nav class="nav-shell" aria-label="Primary navigation">
         <button class="brand" type="button" aria-label="Open navigation" aria-expanded="false"><span class="brand-mark"><img src="../../../../assets/img/avatar.png" alt="" /></span><span>Akvius</span></button>
@@ -39,7 +49,7 @@
         <div class="dictionary-frame-panel vocab-frame-panel">
           <iframe
             title="Uyghur Vocabulary Trainer"
-            src="app/index.html?v=20260619a"
+            src="app/index.html?v=20260624i"
             loading="eager"
             scrolling="auto"
           ></iframe>

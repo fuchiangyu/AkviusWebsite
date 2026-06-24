@@ -7,10 +7,52 @@
     <script>
       if (window.parent !== window) document.documentElement.classList.add("is-embedded");
     </script>
-    <link rel="stylesheet" href="./vocab.css?v=20260619a">
+    <link rel="stylesheet" href="./vocab.css?v=20260624i">
   </head>
   <body>
-    <main class="app-shell">
+    <main class="launch-screen" id="launch-screen">
+      <section class="launch-panel" aria-labelledby="launch-title">
+        <div class="brand">
+          <span>Uyghur Vocabulary</span>
+          <h1 id="launch-title">Vocabulary Trainer</h1>
+        </div>
+        <p class="launch-copy">Choose a word level, then begin in one study mode.</p>
+        <label class="field">
+          <span>Word Bank</span>
+          <select id="launch-bank-select"></select>
+        </label>
+        <label class="field">
+          <span>Word Level</span>
+          <select id="launch-level-select"></select>
+        </label>
+        <section class="launch-stats" aria-label="Selected word statistics">
+          <div><strong id="launch-total-count">0</strong><span>Words</span></div>
+          <div><strong id="launch-known-count">0</strong><span>Known</span></div>
+          <div><strong id="launch-learning-count">0</strong><span>Learning</span></div>
+          <div><strong id="launch-progress-rate">0%</strong><span>Progress</span></div>
+        </section>
+        <label class="search-box launch-search">
+          <span>Search selected words</span>
+          <input id="launch-search" type="search" autocomplete="off" placeholder="Chinese / Uyghur / Latin / part of speech">
+        </label>
+        <div class="launch-modes" aria-label="Study mode">
+          <button type="button" class="launch-mode" data-start-mode="flashcard">
+            <strong>Cards</strong>
+            <span>Review one word at a time</span>
+          </button>
+          <button type="button" class="launch-mode" data-start-mode="quiz">
+            <strong>Quiz</strong>
+            <span>Choose the matching meaning</span>
+          </button>
+          <button type="button" class="launch-mode" data-start-mode="list">
+            <strong>List</strong>
+            <span>Browse the selected words</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <main class="app-shell" id="app-shell" hidden>
       <aside class="sidebar">
         <div class="brand">
           <span>Uyghur Vocabulary</span>
@@ -22,10 +64,10 @@
           <select id="bank-select"></select>
         </label>
 
-        <section class="filter-block">
-          <div class="block-title">Level</div>
-          <div class="level-list" id="level-list"></div>
-        </section>
+        <label class="field">
+          <span>Word Level</span>
+          <select id="level-select"></select>
+        </label>
 
         <section class="filter-block">
           <div class="block-title">Mode</div>
@@ -45,7 +87,7 @@
       </aside>
 
       <section class="main-panel">
-        <header class="study-header">
+        <header class="study-header" hidden>
           <div class="title-block">
             <p id="bank-description"></p>
             <h2 id="active-title">Study Set</h2>
@@ -58,7 +100,7 @@
           </div>
         </header>
 
-        <section class="dashboard-row">
+        <section class="dashboard-row" hidden>
           <div class="memory-panel">
             <div class="memory-summary">
               <div class="donut" id="memory-donut"></div>
@@ -71,7 +113,7 @@
           </div>
         </section>
 
-        <section class="toolbar">
+        <section class="toolbar" hidden>
           <label class="search-box">
             <span>Search</span>
             <input id="search" type="search" autocomplete="off" placeholder="Chinese / Uyghur / Latin / part of speech">
@@ -81,6 +123,10 @@
             <button id="clear-progress" type="button" class="danger">Clear Progress</button>
           </div>
         </section>
+
+        <div class="study-utility">
+          <button id="change-setup" type="button" class="change-setup" aria-label="Return to level and mode selection">← Modes</button>
+        </div>
 
         <section class="mode-view active" data-view="flashcard">
           <div class="card-wrap">
@@ -94,6 +140,7 @@
               </div>
               <div class="swipe-cue swipe-left">Don't know</div>
               <div class="swipe-cue swipe-right">Known</div>
+              <div class="swipe-cue swipe-vertical">Fuzzy</div>
               <div class="ug-word" id="card-ug"></div>
               <div class="card-valency" id="card-valency" hidden></div>
               <button class="ghost" id="reveal" type="button">Show Meaning</button>
@@ -145,7 +192,7 @@
         </section>
       </section>
     </main>
-    <script src="./data/wordbanks.js?v=20260619a"></script>
-    <script src="./vocab.js?v=20260619a"></script>
+    <script src="./data/wordbanks.js?v=20260624b"></script>
+    <script src="./vocab.js?v=20260624d"></script>
   </body>
 </html>
